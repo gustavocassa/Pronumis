@@ -3,41 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Imágenes 2</title>
+    <title>Galería de Imágenes Automática</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f5f5f5;
+            padding: 20px;
         }
+
         .search-container {
-            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 0 auto 30px;
         }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #4CAF50;
+        }
+
         .gallery-container {
-            display: flex;
-            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
+
         .gallery-item {
-            margin: 10px;
-            text-align: center;
-        }
-        img {
-            max-width: 100px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .no-results {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
             display: none;
-            color: red;
+        }
+
+        .gallery-item.visible {
+            display: block;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .image-name {
+            margin-top: 10px;
+            text-align: center;
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: #666;
+            font-size: 18px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: #666;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <div class="search-container">
-        <input type="text" class="search-input" placeholder="Buscar por nombre de imagen...">
-        <div class="no-results">No se encontraron imágenes.</div>
+        <input type="text" class="search-input" placeholder="Buscar imágenes por nombre...">
     </div>
-    <div class="gallery-container"></div>
-    <div class="loading">Cargando imágenes...</div>
+
+    <div class="gallery-container">
+        <div class="loading">Cargando imágenes...</div>
+        <div class="no-results">No se encontraron imágenes</div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -80,6 +146,9 @@
 
                     galleryContainer.appendChild(galleryItem);
                 });
+
+                // Mostrar todas las imágenes al cargar
+                document.querySelectorAll('.gallery-item').forEach(item => item.classList.add('visible'));
             }
 
             function filterImages() {
@@ -90,10 +159,10 @@
                 galleryItems.forEach(item => {
                     const filename = item.dataset.filename;
                     if (filename.includes(searchTerm)) {
-                        item.style.display = 'block';
+                        item.classList.add('visible');
                         hasVisibleItems = true;
                     } else {
-                        item.style.display = 'none';
+                        item.classList.remove('visible');
                     }
                 });
 
