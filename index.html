@@ -105,80 +105,75 @@
         <div class="no-results">No se encontraron imágenes</div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const galleryContainer = document.querySelector('.gallery-container');
-            const searchInput = document.querySelector('.search-input');
-            const noResults = document.querySelector('.no-results');
-            const loading = document.querySelector('.loading');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const galleryContainer = document.querySelector('.gallery-container');
+        const searchInput = document.querySelector('.search-input');
+        const noResults = document.querySelector('.no-results');
+        const loading = document.querySelector('.loading');
 
-            async function loadImages() {
-                try {
-                    const response = await fetch('get_images.php');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const images = await response.json();
-                    
-                    loading.style.display = 'none';
-                    
-                    if (images.error) {
-                        console.error('Error:', images.error);
-                        loading.textContent = `Error: ${images.error}`;
-                        return;
-                    }
-
-                    if (images.length === 0) {
-                        noResults.style.display = 'block';
-                        return;
-                    }
-
-                    images.forEach(image => {
-                        const galleryItem = document.createElement('div');
-                        galleryItem.className = 'gallery-item visible';
-                        galleryItem.dataset.filename = image.filename;
-
-                        galleryItem.innerHTML = `
-                            <img src="${image.path}" 
-                                 alt="${image.filename}"
-                                 onerror="this.onerror=null; console.error('Error loading image:', '${image.path}');">
-                            <div class="image-name">${image.filename}</div>
-                        `;
-
-                        galleryContainer.appendChild(galleryItem);
-                    });
-
-                    initializeSearch();
-
-                } catch (error) {
-                    console.error('Error al cargar las imágenes:', error);
-                    loading.textContent = 'Error al cargar las imágenes. Verifica la consola para más detalles.';
+        async function loadImages() {
+            try {
+                const response = await fetch('images.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            }
+                const images = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (images.length === 0) {
+                    noResults.style.display = 'block';
+                    return;
+                }
 
-            function initializeSearch() {
-                const galleryItems = document.querySelectorAll('.gallery-item');
+                images.forEach(image => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item visible';
+                    galleryItem.dataset.filename = image.filename;
 
-                searchInput.addEventListener('input', function(e) {
-                    const searchTerm = e.target.value.toLowerCase();
-                    let hasVisibleItems = false;
+                    galleryItem.innerHTML = `
+                        <img src="${image.path}" 
+                             alt="${image.filename}"
+                             onerror="this.onerror=null; console.error('Error loading image:', '${image.path}');">
+                        <div class="image-name">${image.filename}</div>
+                    `;
 
-                    galleryItems.forEach(item => {
-                        const filename = item.dataset.filename.toLowerCase();
-                        if (filename.includes(searchTerm)) {
-                            item.classList.add('visible');
-                            hasVisibleItems = true;
-                        } else {
-                            item.classList.remove('visible');
-                        }
-                    });
-
-                    noResults.style.display = hasVisibleItems ? 'none' : 'block';
+                    galleryContainer.appendChild(galleryItem);
                 });
-            }
 
-            loadImages();
-        });
-    </script>
+                initializeSearch();
+
+            } catch (error) {
+                console.error('Error al cargar las imágenes:', error);
+                loading.textContent = 'Error al cargar las imágenes. Verifica la consola para más detalles.';
+            }
+        }
+
+        function initializeSearch() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                let hasVisibleItems = false;
+
+                galleryItems.forEach(item => {
+                    const filename = item.dataset.filename.toLowerCase();
+                    if (filename.includes(searchTerm)) {
+                        item.classList.add('visible');
+                        hasVisibleItems = true;
+                    } else {
+                        item.classList.remove('visible');
+                    }
+                });
+
+                noResults.style.display = hasVisibleItems ? 'none' : 'block';
+            });
+        }
+
+        loadImages();
+    });
+</script>
+
 </body>
 </html>
