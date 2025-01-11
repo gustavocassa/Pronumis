@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Imágenes</title>
+    <style>
+        .gallery-container { display: flex; flex-wrap: wrap; }
+        .gallery-item { margin: 10px; }
+        img { max-width: 100px; }
+    </style>
+</head>
+<body>
+    <div class="gallery-container"></div>
+    <div class="loading">Cargando imágenes...</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryContainer = document.querySelector('.gallery-container');
+            const loading = document.querySelector('.loading');
+
+            // Lista de imágenes (deberás actualizarla manualmente al agregar nuevas imágenes)
+            const images = [
+                "image1.jpg",
+                "image2.jpg",
+                "image3.jpg"
+            ];
+
+            function loadImages() {
+                loading.style.display = 'none';
+
+                if (images.length === 0) {
+                    galleryContainer.innerHTML = '<p>No se encontraron imágenes.</p>';
+                    return;
+                }
+
+                images.forEach(image => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+
+                    galleryItem.innerHTML = `
+                        <img src="images/${image}" 
+                             alt="${image}"
+                             onerror="this.onerror=null; console.error('Error loading image:', 'images/${image}');">
+                        <div class="image-name">${image}</div>
+                    `;
+
+                    galleryContainer.appendChild(galleryItem);
+                });
+            }
+
+            loadImages();
+        });
+    </script>
+</body>
+</html>
