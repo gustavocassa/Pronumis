@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Imágenes Automática</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #4CAF50;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .gallery-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            display: none;
+        }
+
+        .gallery-item.visible {
+            display: block;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .image-name {
+            margin-top: 10px;
+            text-align: center;
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: #666;
+            font-size: 18px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Buscar imágenes por nombre...">
+    </div>
+
+    <div class="gallery-container">
+        <div class="loading">Cargando imágenes...</div>
+        <div class="no-results">No se encontraron imágenes</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryContainer = document.querySelector('.gallery-container');
+            const searchInput = document.querySelector('.search-input');
+            const noResults = document.querySelector('.no-results');
+            const loading = document.querySelector('.loading');
+
+            async function loadImages() {
+                try {
+                    const response = await fetch('get_images.php');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const images = await response.json();
+                    
+                    loading.style.display = 'none';
+                    
+                    if (images.error) {
+                        console.error('Error:', images.error);
+                        loading.textContent = `Error: ${images.error}`;
+                        return;
+                    }
+
+                    if (images.length === 0) {
+                        noResults.style.display = 'block';
+                        return;
+                    }
+
+                    images.forEach(image => {
+                        const galleryItem = document.createElement('div');
+                        galleryItem.className = 'gallery-item visible';
+                        galleryItem.dataset.filename = image.filename;
+
+                        galleryItem.innerHTML = `
+                            <img src="${image.path}" 
+                                 alt="${image.filename}"
+                                 onerror="this.onerror=null; console.error('Error loading image:', '${image.path}');">
+                            <div class="image-name">${image.filename}</div>
+                        `;
+
+                        galleryContainer.appendChild(galleryItem);
+                    });
+
+                    initializeSearch();
+
+                } catch (error) {
+                    console.error('Error al cargar las imágenes:', error);
+                    loading.textContent = 'Error al cargar las imágenes. Verifica la consola para más detalles.';
+                }
+            }
+
+            function initializeSearch() {
+                const galleryItems = document.querySelectorAll('.gallery-item');
+
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    let hasVisibleItems = false;
+
+                    galleryItems.forEach(item => {
+                        const filename = item.dataset.filename.toLowerCase();
+                        if (filename.includes(searchTerm)) {
+                            item.classList.add('visible');
+                            hasVisibleItems = true;
+                        } else {
+                            item.classList.remove('visible');
+                        }
+                    });
+
+                    noResults.style.display = hasVisibleItems ? 'none' : 'block';
+                });
+            }
+
+            loadImages();
+        });
+    </script>
+</body>
+</html>
