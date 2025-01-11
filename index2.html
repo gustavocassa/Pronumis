@@ -51,7 +51,11 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
-            cursor: pointer;
+            display: none;
+        }
+
+        .gallery-item.visible {
+            display: block;
         }
 
         .gallery-item:hover {
@@ -63,91 +67,6 @@
             height: 200px;
             object-fit: cover;
             border-radius: 4px;
-            transition: transform 0.3s ease; /* Transición para el zoom */
-        }
-
-        .gallery-item img:hover {
-            transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
-        }
-
-        .image-name {
-            margin-top: 10px;
-            text-align: center;
-            color: #333;
-        Aquí tienes el código modificado para agregar la opción de aumentar el tamaño de la imagen y un zoom al pasar el mouse sobre ella:
-
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Imágenes Automática</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 30px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        .search-input:focus {
-            border-color: #4CAF50;
-        }
-
-        .gallery-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .gallery-item {
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 4px;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
         }
 
         .image-name {
@@ -174,38 +93,6 @@
             color: #666;
             font-size: 18px;
         }
-
-        /* Estilos para el modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -218,21 +105,12 @@
         <div class="no-results">No se encontraron imágenes</div>
     </div>
 
-    <!-- Modal -->
-    <div id="myModal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="img01">
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const galleryContainer = document.querySelector('.gallery-container');
             const loading = document.querySelector('.loading');
             const searchInput = document.querySelector('.search-input');
             const noResults = document.querySelector('.no-results');
-            const modal = document.getElementById("myModal");
-            const modalImg = document.getElementById("img01");
-            const closeModal = document.querySelector(".close");
 
             // Lista de imágenes (deberás actualizarla manualmente al agregar nuevas imágenes)
             const images = [
@@ -266,20 +144,6 @@
                         <div class="image-name">${image}</div>
                     `;
 
-                    // Agregar evento de clic para abrir el modal
-                    galleryItem.addEventListener('click', function() {
-                        modal.style.display = "flex";
-                        modalImg.src = `images/${image}`;
-                    });
-
-                    // Agregar evento de hover para el zoom
-                    galleryItem.addEventListener('mouseover', function() {
-                        this.querySelector('img').style.transform = 'scale(1.2)';
-                    });
-                    galleryItem.addEventListener('mouseout', function() {
-                        this.querySelector('img').style.transform = 'scale(1)';
-                    });
-
                     galleryContainer.appendChild(galleryItem);
                 });
 
@@ -306,18 +170,6 @@
             }
 
             searchInput.addEventListener('input', filterImages);
-
-            // Cerrar el modal al hacer clic en la "X"
-            closeModal.addEventListener('click', function() {
-                modal.style.display = "none";
-            });
-
-            // Cerrar el modal al hacer clic fuera de la imagen
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
 
             loadImages();
         });
