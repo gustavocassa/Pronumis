@@ -1,5 +1,10 @@
 [
-    {"filename": "image1.jpg", "path": "images/image1.jpg"},
-    {"filename": "image2.jpg", "path": "images/image2.jpg"},
-    {"filename": "image3.jpg", "path": "images/image3.jpg"}
+    {"filename": "1.jpg", "path": "images/1.jpg"},
+    {"filename": "2.png", "path": "images/2.png"},
+  {"filename": "3.jpg", "path": "images/3.jpg"},
+    {"filename": "4.png", "path": "images/4.png"},
+      {"filename": "5.png", "path": "images/5.png"},
+    {"filename": "6.png", "path": "images/6.png"},
+      {"filename": "7.jpg", "path": "images/7.jpg"},
+    {"filename": "8.png", "path": "images/8.png"}
 ]
