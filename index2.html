@@ -194,23 +194,25 @@
                 document.querySelectorAll('.gallery-item').forEach(item => item.classList.add('visible'));
             }
 
-            function filterImages() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const galleryItems = document.querySelectorAll('.gallery-item');
-                let hasVisibleItems = false;
+        function filterImages() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    let hasVisibleItems = false;
 
-                galleryItems.forEach(item => {
-                    const filename = item.dataset.filename;
-                    if (filename.includes(searchTerm)) {
-                        item.classList.add('visible');
-                        hasVisibleItems = true;
-                    } else {
-                        item.classList.remove('visible');
-                    }
-                });
+    galleryItems.forEach(item => {
+        const filename = item.dataset.filename;
+        if (filename.includes(searchTerm)) {
+            item.style.display = 'block'; // Mostrar si coincide
+            hasVisibleItems = true;
+        } else {
+            item.style.display = 'none'; // Ocultar si no coincide
+        }
+    });
 
-                noResults.style.display = hasVisibleItems ? 'none' : 'block';
-            }
+    // Mostrar u ocultar el mensaje de "No se encontraron imágenes"
+    noResults.style.display = hasVisibleItems ? 'none' : 'block';
+}
+
 
             searchInput.addEventListener('input', filterImages);
 
