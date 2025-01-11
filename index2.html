@@ -3,14 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Imágenes</title>
+    <title>Galería de Imágenes 2</title>
     <style>
-        .gallery-container { display: flex; flex-wrap: wrap; }
-        .gallery-item { margin: 10px; }
-        img { max-width: 100px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .gallery-item {
+            margin: 10px;
+            text-align: center;
+        }
+        img {
+            max-width: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .no-results {
+            display: none;
+            color: red;
+        }
     </style>
 </head>
 <body>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Buscar por nombre de imagen...">
+        <div class="no-results">No se encontraron imágenes.</div>
+    </div>
     <div class="gallery-container"></div>
     <div class="loading">Cargando imágenes...</div>
 
@@ -18,17 +43,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             const galleryContainer = document.querySelector('.gallery-container');
             const loading = document.querySelector('.loading');
+            const searchInput = document.querySelector('.search-input');
+            const noResults = document.querySelector('.no-results');
 
             // Lista de imágenes (deberás actualizarla manualmente al agregar nuevas imágenes)
             const images = [
-               "1.jpg",
-               "2.png",
-               "3.jpg",
-               "4.png",
-               "5.png",
-               "6.png",
-               "7.jpg",
-               "8.png"  
+                "1.jpg",
+                "2.png",
+                "3.jpg",
+                "4.png",
+                "5.png",
+                "6.png",
+                "7.jpg",
+                "8.png"  
             ];
 
             function loadImages() {
@@ -42,6 +69,7 @@
                 images.forEach(image => {
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
+                    galleryItem.dataset.filename = image.toLowerCase(); // Para búsqueda
 
                     galleryItem.innerHTML = `
                         <img src="images/${image}" 
@@ -53,6 +81,26 @@
                     galleryContainer.appendChild(galleryItem);
                 });
             }
+
+            function filterImages() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const galleryItems = document.querySelectorAll('.gallery-item');
+                let hasVisibleItems = false;
+
+                galleryItems.forEach(item => {
+                    const filename = item.dataset.filename;
+                    if (filename.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasVisibleItems = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                noResults.style.display = hasVisibleItems ? 'none' : 'block';
+            }
+
+            searchInput.addEventListener('input', filterImages);
 
             loadImages();
         });
