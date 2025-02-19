@@ -1,8 +1,9 @@
 // Archivo JSON simulado (puedes usar un servidor para cargarlo dinámicamente)
 const users = [
-  { username: "admin", password: "1234", redirect: "admin.html" },
-  { username: "user1", password: "abcd", redirect: "user1.html" },
-  { username: "user2", password: "5678", redirect: "user2.html" }
+  { username: "alvaro", password: "1234", redirect: "https://gustavocassa.github.io/Anime-Diary/prueba.html" },
+  { username: "ivan", password: "1234", redirect: "https://gustavocassa.github.io/Anime-Diary/pagina-ivan.html" },
+  { username: "gustavo", password: "1234", redirect: "https://gustavocassa.github.io/Anime-Diary/pagina-gustavo.html" },
+
 ];
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
