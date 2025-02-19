@@ -469,44 +469,41 @@ select.filter-button:hover {
                     <h3 style="color: white; margin: 0;">Agregar Nuevo Contenido</h3>
                     <button id="hideFormButton" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
                 </div>
-                <form id="contentForm" style="display: grid; gap: 10px;">
-                    <input type="text" id="newTitle" placeholder="Título" required 
-                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    
-                    <input type="text" id="newCategory" placeholder="Categoría (separar por comas)" required
-                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    
-                    <input type="text" id="newScore" placeholder="Puntuación (ej: 8/10)" required
-                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    
-                    <input type="text" id="newImage" placeholder="URL de la imagen" required
-                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    
-                    <input type="text" id="newEpisode" placeholder="Episodios (ej: 12/12)" required
-                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    
-                    <select id="newStatus" required
-                            style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    <option value="">Seleccionar Estado</option>
-                    <option value="Completados">Completados</option>
-                    <option value="Viendo">Viendo</option>
-                    <option value="Abandonados">Abandonados</option>
-                    <option value="En espera">En espera</option>
-                </select>
-                
-                <select id="newType" required
-                        style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
-                    <option value="">Seleccionar Tipo</option>
-                    <option value="anime">Anime</option>
-                    <option value="series">Serie</option>
-                    <option value="movie">Película</option>
-                    <option value="Hentai">Hentai</option>
-                </select>
-                
-                <button type="submit" 
-                        style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                    Agregar Contenido
-                </button>
+<form id="animeForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="title" placeholder="Título" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="category" placeholder="Categoría (separar por comas)" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" class="form-control" id="score" placeholder="Puntuación (ej: 8/10)" min="0" max="10" step="0.1">
+                </div>
+                <div class="form-group">
+                    <input type="url" class="form-control" id="imageUrl" placeholder="URL de la imagen">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="episodes" placeholder="Episodios (ej: 12/12)">
+                </div>
+                <div class="form-group">
+                    <select class="form-control" id="status" required>
+                        <option value="" disabled selected>Seleccionar Estado</option>
+                        <option value="viendo">Viendo</option>
+                        <option value="completado">Completado</option>
+                        <option value="en_espera">En Espera</option>
+                        <option value="abandonado">Abandonado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" id="type" required>
+                        <option value="" disabled selected>Seleccionar Tipo</option>
+                        <option value="tv">TV</option>
+                        <option value="movie">Película</option>
+                        <option value="ova">OVA</option>
+                        <option value="special">Especial</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Agregar Contenido</button>
             </form>
         </div>
 
@@ -2631,27 +2628,26 @@ select.filter-button:hover {
         // Agregar el nuevo contenido al array mediaItems
         mediaItems.push(newContent);
 
-        // Generar el código del nuevo contenido
-        const newCode = `
-        {
-        "title": "${newContent.title}",
-        "category": "${newContent.category}",
-        "score": "${newContent.score}",
-        "image": "${newContent.image}",
-        "episode": "${newContent.episode}",
-        "status": "${newContent.status}"
-        },`;
+        // Función para llenar el formulario al hacer clic en una tarjeta
+        function fillForm(anime) {
+            document.getElementById('title').value = anime.title;
+            document.getElementById('category').value = anime.genres?.map(g => g.name).join(', ') || '';
+            document.getElementById('score').value = anime.score || '';
+            document.getElementById('imageUrl').value = anime.images.jpg.image_url;
+            document.getElementById('episodes').value = anime.episodes ? `${anime.episodes}/${anime.episodes}` : '';
+            
+            // Mapear el tipo de anime
+            const typeMap = {
+                'TV': 'tv',
+                'Movie': 'movie',
+                'OVA': 'ova',
+                'Special': 'special'
+            };
+            if (anime.type && typeMap[anime.type]) {
+                document.getElementById('type').value = typeMap[anime.type];
+            }
+        }
 
-        // Crear un elemento temporal para copiar el código
-        const tempTextArea = document.createElement('textarea');
-        tempTextArea.value = newCode;
-        document.body.appendChild(tempTextArea);
-        tempTextArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempTextArea);
-
-        // Guardar en localStorage
-        localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
 
         // Actualizar la visualización
         const contentType = document.getElementById('contentTypeSelect').value;
