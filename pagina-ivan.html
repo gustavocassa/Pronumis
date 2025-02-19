@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+
+    <title>Anime Tracker</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f4f4f4;
+            --card-background: #fff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgb(28,45,66);
+            color: var(--text-color);
+            transition: margin-left var(--transition-speed) ease;
+            min-height: 100vh;
+            
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* Search and Filter Styles */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color var(--transition-speed);
+            color: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            font-weight: 500;
+        }
+
+        .filter-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Gallery Styles */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, minmax(150px, 1fr));
+
+
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .anime-card {
+            background-color: rgba(24,26,27);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform var(--transition-speed);
+        
+        }
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5); /* Sombra difusa */
+
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .anime-info {
+            padding: 1rem;
+        }
+
+        .anime-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .anime-category {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .anime-score {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: calc(-1 * var(--sidebar-width));
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--card-background);
+            box-shadow: 2px 0 5px var(--shadow-color);
+            transition: left var(--transition-speed) ease;
+            z-index: 1000;
+            padding: 1.5rem;
+            color: white; /* Color del texto */
+            background-color: #444; /* Color de fondo de las tarjetas */
+
+        }
+
+        .sidebar.show-sidebar {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        
+.stats-container {
+    display: flex;
+    flex-direction: column; /* Disposición vertical */
+    margin-top:80px;
+}
+
+.stat-card {
+    background-color: #1a1a1a; /* Color de fondo de las tarjetas */
+    margin: 10px 0; /* Margen entre tarjetas */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    text-align: center; /* Centrar texto */
+    flex: 1; /* Cada tarjeta ocupa el mismo espacio */
+    margin: 0 10px; /* Espacio entre las tarjetas */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 25px;
+
+}
+
+.stat-number {
+    font-size: 24px; /* Tamaño de fuente grande */
+    font-weight: bold; /* Negrita */
+}
+
+        body.sidebar-active {
+            margin-left: var(--sidebar-width);
+        }
+
+    
+
+        /*MODAL*/
+        .modal {
+            display: none; /* Ocultar el modal por defecto */
+            position: fixed; /* Fijar el modal en la ventana */
+            z-index: 9999; /* Asegurarse de que esté por encima de otros elementos */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ancho completo */
+            height: 100%; /* Alto completo */
+            overflow: auto; /* Habilitar desplazamiento si es necesario */
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro y difuminado */
+            display: flex; /* Usar flexbox para centrar el contenido */
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+        }
+
+        .modal-contenido {
+    width: 1200px; /* Ancho específico */
+    height: 600px; /* Alto específico */
+    object-fit: cover; /* Rellenar el contenedor manteniendo la relación de aspecto */
+}
+
+
+        .cerrar {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+
+
+
+
+        /*BARRA LATERAL*/
+        /* Cambiar el color de la barra de desplazamiento */
+::-webkit-scrollbar {
+    width: 12px; /* Ancho de la barra */
+}
+
+::-webkit-scrollbar-track {
+    background: #c2d0ff; /* Color del fondo de la barra */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #007bff; /* Color de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0059b8; /* Color de la barra al pasar el ratón */
+}
+
+
+header {
+    position: sticky;
+    align-items: center;
+    justify-content: center;
+    top: 0; /* Mantiene el header en la parte superior */
+    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
+    background-color: rgba(255, 255, 255, 0.514);
+    padding-left: 10px;
+
+}
+.no-results {
+    color: white; /* Color blanco */
+    align-items: center; /* Alinear al centro */
+    justify-content: center;
+    display: flex;
+    text-align: center;
+    margin-top: 20px; /* Espacio superior opcional */
+    font-size: 1.5em; /* Tamaño de fuente opcional */
+}
+
+            #sidebarSearch {
+        width:225px;
+            }
+
+            select.filter-button {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 30px;
+}
+
+select.filter-button:hover {
+    background-color: var(--primary-hover);
+}
+
+@media (max-width: 768px) {
+    #sidebarSearch {
+        margin-left: 12.5px; 
+        
+        margin-top: 60px; 
+        margin-bottom:-40px;
+        width:325px;
+    }
+  
+    .container {
+                padding: 1rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            body.sidebar-active {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            .sidebar show-sidebar{
+                height: 100%;
+                 }
+}
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <button class="close-button" id="closeSidebar">
+            </button>
+        </div>
+
+        <div class="search-container">
+            <input 
+                type="text" id="sidebarSearch" class="search-input" placeholder="Buscar anime..." style="background-color: rgb(18,18,18);">
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div>Todos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedCount">0</div>
+                <div>Completados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="watchingCount">0</div>
+                <div>Viendo</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="abandonedCount">0</div>
+                <div>Abandonados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="holdingCount">0</div>
+                <div>En Espera</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header">
+                <button class="menu-button" id="openSidebar">
+                    <i class="fas fa-bars" style="color: black;"></i>
+                </button>
+                <a href="pagina.html" style="padding:5px;">
+                    <img src="https://i.ibb.co/L8s0GCz/logo-2.png" alt="Descripción del logo" style="width: 50px; height: 50px;">
+                </a>
+            
+                <h1 style="color:rgb(5, 5, 5); margin-bottom: 5px;">Anime Diary</h1>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <div class="search-container" style="max-width: 600px;">
+                <input 
+                    type="text" 
+                    id="mainSearch" 
+                    class="search-input" 
+                    placeholder="Buscar anime..."
+                    style="background-color: rgb(18,18,18);"
+                >
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-button" onclick="filterByStatus('Todos los Animes')">
+                    Todos
+                </button>
+                <button class="filter-button" onclick="filterByStatus('Completados')">
+                    Completados
+                </button>
+                <button class="filter-button" onclick="filterByStatus('Viendo')">
+                    Viendo
+                </button>
+                <button class="filter-button" onclick="filterByStatus('Abandonados')">
+                    Abandonados
+                </button>
+                <button class="filter-button" onclick="filterByStatus('En espera')">
+                    En Espera
+                </button>
+                <select id="sortOptions" class="filter-button">
+                    <option value="default">Orden Predeterminado</option>
+                    <option value="az">Ordenar A-Z</option>
+                    <option value="za">Ordenar Z-A</option>
+                    <option value="rating">Ordenar por Calificación</option>
+                </select>
+    
+            </div>
+            <select id="contentTypeSelect" class="filter-button">
+                <option value="anime">Animes</option>
+                <option value="Hentai">H🔥</option>
+                <option value="series">Series</option>
+                <option value="movie">Películas</option>
+            </select>
+
+            <button id="toggleFormButton" class="filter-button" style="margin-left: auto; width: 40px; height: 40px; border-radius: 50%; padding: 0; font-size: 24px; display: flex; align-items: center; justify-content: center;">
+                +
+            </button>
+        </div>
+
+        <!-- Agregar el formulario aquí: -->
+        <div class="add-content-form" id="addContentForm" style="max-width:300px; display: none; margin-bottom: 20px; background-color: rgba(24,26,27); padding: 20px; border-radius: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: white; margin: 0;">Agregar Nuevo Contenido</h3>
+                    <button id="hideFormButton" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
+                </div>
+                <form id="contentForm" style="display: grid; gap: 10px;">
+                    <input type="text" id="newTitle" placeholder="Título" required 
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newCategory" placeholder="Categoría (separar por comas)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newScore" placeholder="Puntuación (ej: 8/10)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newImage" placeholder="URL de la imagen" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newEpisode" placeholder="Episodios (ej: 12/12)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <select id="newStatus" required
+                            style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Estado</option>
+                    <option value="Completados">Completados</option>
+                    <option value="Viendo">Viendo</option>
+                    <option value="Abandonados">Abandonados</option>
+                    <option value="En espera">En espera</option>
+                </select>
+                
+                <select id="newType" required
+                        style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Tipo</option>
+                    <option value="anime">Anime</option>
+                    <option value="series">Serie</option>
+                    <option value="movie">Película</option>
+                    <option value="Hentai">Hentai</option>
+                </select>
+                
+                <button type="submit" 
+                        style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Agregar Contenido
+                </button>
+            </form>
+        </div>
+
+        <div class="gallery" id="animeGallery"></div>
+    </div>
+    <div id="modal" class="modal">
+        <span class="cerrar">&times;</span>
+        <img class="modal-contenido" id="img-modal">
+    </div>
+<footer>
+    <h1 style="justify-content: center; display: flex; align-items: center; color: white;">&copy; Ivan D. Aquino</h1>
+    <h1 style="justify-content: center; display: flex; align-items: center; color: white; margin-bottom: 50px;">&copy; Gustavo Cassanello</h1>
+</footer>
+<script>
+    const animes = [
+    {
+    "title": "Assassination Classroom",
+    "category": "Acción, Comedia, Escolar, Shounen",
+    "score": "8.5/10",
+    "image": "https://i.ytimg.com/vi/ri4vE6TWk_I/maxresdefault.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Baki",
+    "category": "Acción, Artes marciales, Aventura, Deportes, Shounen",
+    "score": "7.5/10",
+    "image": "https://mush.pl/wp-content/uploads/2024/04/91f6e-baki-hanma-tekken-8.jpeg?w=1200",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Black Bullet",
+    "category": "Acción, sci-fi, drama, misterio, superpoderes, tragedia, seinen",
+    "score": "7.0/10",
+    "image": "https://m.media-amazon.com/images/M/MV5BZmZiMmI4YjktNWZiYy00NDVhLTliNTgtNmFjMDJhN2Q5YzM3XkEyXkFqcGc@._V1_.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Black Clover",
+    "category": "Acción, Aventura, Comedia, Fantasía, Drama, Shounen",
+    "score": "9.75/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/0273e80242d80b0218f640e038269c18.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Boruto",
+    "category": "acción, aventura, comedia, superpoderes, Shounen",
+    "score": "4.0/10",
+    "image": "https://images5.alphacoders.com/705/705601.png",
+    "episode": "12/12",
+    "status": "Abandonados"
+    
+    },
+    {
+    "title": "Boku no Hero",
+    "category": "acción, comedia, superpoderes, escolar, Shounen",
+    "score": "8.0/10",
+    "image": "https://4kwallpapers.com/images/wallpapers/my-hero-academia-3840x2160-19011.jpg",
+    "episode": "12/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "Blue Lock",
+    "category": "deportes, psicológico, Shounen",
+    "score": "8.5/10",
+    "image": "https://images3.alphacoders.com/136/1368057.jpeg",
+    "episode": "12/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "Chainsaw Man",
+    "category": "acción, aventura, comedia, sobrenatural, Shounen",
+    "score": "9/10",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBMOYT_Z6QHlQdXhth2GHTGbKAH275u2Hld_D47qluKG_j0-bHktzmkmkVT5kAFnZsmIdqR6fK7ow1M-e7idVRyWj7FQ0r8gfm0giWG4Q2p9YLgUzHLPxjhkl6jC9ztl_De1qJKYhdEW0igzpBZoe6wxToZR0WDdZrJjkshN4Q40OeT9STAvng75UXLR62/d/CHAINSAWMAN-32132.",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Classroom of the Elite",
+    "category": "escolar, psicológico",
+    "score": "7.5/10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhBUK8UNB5voMeLQGzzEX2Ldz-Lhz55LnicQ&s",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Darling in the Franxx",
+    "category": "acción, drama, mecha, romance, ciencia ficción",
+    "score": "8.75/10",
+    "image": "https://i.pinimg.com/originals/4c/7b/80/4c7b8031a685c394c89474ff02ca35b3.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Death Note",
+    "category": "misterio, psicológico, sobrenatural, thriller",
+    "score": "9.5/10",
+    "image": "https://wallpapers.com/images/hd/death-note-light-yagami-l-and-ryuk-htruruirspqq0zot.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Dr Stone",
+    "category": "aventura, ciencia, Shounen",
+    "score": "8.5/10",
+    "image": "https://wallpapercat.com/w/full/5/3/c/28878-3840x2160-desktop-4k-drstone-wallpaper-photo.jpg",
+    "episode": "12/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "Dragon Ball GT",
+    "category": "acción, aventura, comedia, fantasía, Shounen, superpoderes",
+    "score": "10/10",
+    "image": "https://wallpapers.com/images/hd/dragon-ball-gt-6ebipfufs45hha76.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Dragon Ball Super",
+    "category": "acción, aventura, comedia, fantasía, Shounen, superpoderes",
+    "score": "10/10",
+    "image": "https://www.pixelstalk.net/wp-content/uploads/images6/Dragon-Ball-Super-HD-Wallpaper-4K-Laptop.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Dragon Ball Z",
+    "category": "acción, aventura, comedia, fantasía, Shounen, superpoderes",
+    "score": "10/10",
+    "image": "https://wallpapercat.com/w/full/7/e/f/143566-3840x2160-desktop-4k-dragon-ball-z-wallpaper.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Dragon Ball Z Kai",
+    "category": "acción, aventura, comedia, fantasía, Shounen, superpoderes",
+    "score": "10/10",
+    "image": "https://wallpapers.com/images/hd/dragon-ball-z-kai-1600-x-900-wallpaper-i282end00dnumitt.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Dragon Ball Daima",
+    "category": "Shonen",
+    "score": "8/10",
+    "image": "https://tierragamer.com/wp-content/uploads/2024/09/dragon-ball-daima-key-art.webp",
+    "episode": "12/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "Fire Force",
+    "category": "acción, sobrenatural, fantasía, Shounen",
+    "score": "9.25/10",
+    "image": "https://wallpaperbat.com/img/120459-shinra-saves-tamaki-fire-force-90sflav-c-a-l-l-m-e.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Frieren: Beyond Journey's End",
+    "category": "ficción de aventuras, drama, género fantástico, Shounen",
+    "score": "🔥/10",
+    "image": "https://images8.alphacoders.com/134/1345127.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Fuufu Ijou, Koibito Miman",
+    "category": "comedia, romance, Seinen",
+    "score": "7.75/10",
+    "image": "https://wallpapercave.com/wp/wp11759071.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    
+    {
+    "title": "Genjitsu Shugi Yuusha no Oukoku Saikenki",
+    "category": "acción, fantasía, harem, isekai, magia, militar, romance",
+    "score": "5.0/10",
+    "image": "https://image.tmdb.org/t/p/original/8WfElKNkyLu8NrvtVkMkWzhkOd5.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Hell's Paradise",
+    "category": "acción, aventura, drama, horror, psicológico, Shounen",
+    "score": "8.5/10",
+    "image": "https://www.hindustantimes.com/ht-img/img/2023/04/08/original/Hells_paradise_gabimaru_1680986363413.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Kaiju Nª8",
+    "category": "",
+    "score": "9.5/10",
+    "image": "https://w0.peakpx.com/wallpaper/469/918/HD-wallpaper-kaiju-no-8-manga-battle-viz-warriors-hepburn-kaiju-8-gou-kaiju-no-8-characters.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Kenja no Mago",
+    "category": "acción, aventura, comedia, magia, fantasía, Shounen",
+    "score": "6.0/10",
+    "image": "https://wallpaper.forfun.com/fetch/44/44e7a782af44a3270d36cd58191176ed.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Kimetsu no Yaiba",
+    "category": "acción, demonios, histórico, sobrenatural, Shounen",
+    "score": "9/10",
+    "image": "https://wallpaper.forfun.com/fetch/7f/7f703392c8a95c9f93dbadc2676ef839.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Jujutsu Kaisen",
+    "category": "Aventura, fantasía oscura, sobrenatural, Shounen",
+    "score": "9.25/10",
+    "image": "https://images3.alphacoders.com/134/1341491.png",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Mushoku Tensei",
+    "category": "aventura, drama, fantasía, isekai",
+    "score": "10/10",
+    "image": "https://i.ytimg.com/vi/amnvRiQtog4/maxresdefault.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Naruto",
+    "category": "acción, aventura, comedia, superpoderes, Shounen",
+    "score": "9.0/10",
+    "image": "https://i.ytimg.com/vi/iuxerwCQILo/maxresdefault.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Naruto Shippuden",
+    "category": "acción, aventura, comedia, superpoderes, Shounen",
+    "score": "9.0/10",
+    "image": "https://wallpapers-clan.com/wp-content/uploads/2024/07/naruto-sasuke-epic-battle-anime-desktop-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "One Piece",
+    "category": "acción, aventura, comedia, drama, fantasía, Shounen",
+    "score": "🔥/10",
+    "image": "https://4kwallpapers.com/images/wallpapers/one-piece-character-1920x1080-15328.jpeg",
+    "episode": "12/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "One Punch Man",
+    "category": "acción, comedia, parodia, sci-fi, Seinen, superpoderes",
+    "score": "9.0/10",
+    "image": "https://wallpapers.com/images/hd/one-punch-man-saitama-0ja6h2e1bwtp9j1b.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Oshi no Ko",
+    "category": "drama",
+    "score": "8.0/10",
+    "image": "https://i.ytimg.com/vi/WGO48upjurM/maxresdefault.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Pokemon",
+    "category": "acción, aventura, comedia, fantasía, Shounen",
+    "score": "8.25/10",
+    "image": "https://wallpapercave.com/wp/wp6217601.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Shingeki no Kyojin",
+    "category": "acción, drama, fantasía, horror, misterio, Shounen",
+    "score": "8.0/10",
+    "image": "https://wallpapercat.com/w/full/e/8/6/25770-3840x2160-desktop-4k-attack-on-titan-tv-series-wallpaper-image.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Sono Bisque Doll wa Koi wo Suru",
+    "category": "comedia, drama, romance, Seinen",
+    "score": "8.0/10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi45sPLjx61KSJ5hZaQZf44FOorvvAiSFhpJYSeK-duoNASryRa-9C3IjHH8MxT9RB2JM&usqp=CAU",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Solo Leveling",
+    "category": "acción, aventura, fantasía, sobrenatural, Shounen",
+    "score": "8.75/10",
+    "image": "https://animehungary.hu/images_v2/boritokepek/4154.webp",
+    "episode": "/12",
+    "status": "Viendo"
+    
+    },
+    {
+    "title": "Spy x Family",
+    "category": "acción, comedia, espías, Shounen",
+    "score": "7.5/10",
+    "image": "https://e0.pxfuel.com/wallpapers/153/549/desktop-wallpaper-this-is-my-phone-r-spyxfamily-spy-x-familly.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Sword Art Online",
+    "category": "acción, aventura, fantasía, romance, sci-fi, Shounen",
+    "score": "8.0/10",
+    "image": "https://fr.web.img5.acsta.net/c_640_360/newsv7/21/09/20/15/24/2138410.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Talentless Nana",
+    "category": "misterio, psicológico, sobrenatural, Shounen",
+    "score": "7.5/10",
+    "image": "https://cdn.wallpapersafari.com/55/8/iVAlOr.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Tokyo Ghoul",
+    "category": "drama, horror, misterio, psicológico, Seinen, sobrenatural",
+    "score": "8.5/10",
+    "image": "https://www.fredzone.org/wp-content/uploads/2024/03/Tokyo-Ghoul-anime-Ken-Kaneki.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Tomo-chan",
+    "category": "comedia, romance, Seinen",
+    "score": "8/10",
+    "image": "https://i0.wp.com/www.walkingtheshoreline.com/wp-content/uploads/2024/01/image-7.png?ssl=1",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Your Lie in April",
+    "category": "drama, música, romance, escolar, Shounen",
+    "score": "🎻🎹/10",
+    "image": "https://mrwallpaper.com/images/hd/characters-of-your-lie-in-april-al0dcb8a5xwbgwqq.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Zom 100",
+    "category": "comedia, horror, psicológico, seinen, sobrenatural, Seinen",
+    "score": "8.5/10",
+    "image": "https://m.media-amazon.com/images/M/MV5BNGUxOGY4M2YtOGE1My00ZjRlLTg3Y2EtNjk4OWNiOWVmY2NlXkEyXkFqcGc@._V1_.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "dan-da-dan",
+    "category": "Acción, sobrenatural, comedia romántica, humor negro",
+    "score": "🔥/10",
+    "image": "https://4kwallpapers.com/images/wallpapers/dandadan-key-art-3840x2160-19468.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "The Eminence in Shadow",
+    "category": "Isekai, harem, fantasía, steampunk",
+    "score": "9.5/10",
+    "image": "https://images6.alphacoders.com/130/1303873.png",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Hunter x Hunter",
+    "category": "Shonen",
+    "score": "🔥11/10",
+    "image": "https://i.ytimg.com/vi/o4gYEoRLung/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDXVMsRTYJvdXg-RGxFoA_Iw_hkGg",
+    "episode": "148/148",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "No Game No Life",
+    "category": "Comedy, Fantasy, Ecchi, sekai",
+    "score": "11🔥/10",
+    "image": "https://images7.alphacoders.com/658/658706.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Fairy Tail",
+    "category": "Shonen",
+    "score": "7/10",
+    "image": "https://wallpapers.com/images/featured/fairy-tail-c06lgi65a58nrm80.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Digimon Adventure",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://images.alphacoders.com/781/781254.png",
+    "episode": "12/12",
+    "status": "Completados"
+    
+    },
+    {
+    "title": "Digimon Adventure 2",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://wallpapers.com/images/hd/digimon-pictures-ei0xc1snqi4mvkcl.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Digimon Tamers",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://images4.alphacoders.com/231/231466.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Digimon Frontier",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://wallpapercave.com/wp/wp2624622.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Digimon Data Squad",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://wallpapercave.com/wp/wp2624609.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Fullmetal Alchemist Brotherhood",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/250/449/74/full-metal-alchemist-brotherhood-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Twin Star Exorcists",
+    "category": "Action, Fantasy, Romance",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/993/69/107/twin-star-exorcists-wallpaper-preview.jpg",
+    "episode": "50/50",
+    "status": "Completados"
+    },
+    {
+    "title": "Momokuri",
+    "category": "Shoujo",
+    "score": "7/10",
+    "image": "https://mundodoshoujo.fansubs.pt/wp-content/uploads/2018/09/MundoShoujo-Momokuri-17-e-18-BD720p-pt-pt.jpg",
+    "episode": "24/24",
+    "status": "Completados"
+    },
+    {
+    "title": "Re Zero",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://i0.wp.com/lightnovelsreviews.com/wp-content/uploads/2021/01/ReZero-HD-Wallpaper-Background-30875-Wallur.png?resize=800%2C450&ssl=1",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ameku Takao no Suiri Karte",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://animenew.com.br/wp-content/uploads/2024/09/Ameku-Takao-no-Suiri-Karte-Primeiro-trailer-anuncia-previsao-de-estreia-jpg.webp",
+    "episode": "0/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "Tate no Yuusha no Nariagari",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/23/775/733/iwatani-naofumi-raphtalia-anime-sword-shield-hd-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Akkun to Kanojo",
+    "category": "Comedia, romance",
+    "score": "7/10",
+    "image": "https://i.ytimg.com/vi/NBQYsPfG_1o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCyClg-UT9pei0I-FaAhF9-_4P3XQ",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Tsuki ga Michibiku Isekai Douchuu",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://i.pinimg.com/736x/89/0c/ba/890cba28292b5790c3129b0b3fd6063e.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Maburaho",
+    "category": "Comedia, romance",
+    "score": "7/10",
+    "image": "https://images3.alphacoders.com/230/230975.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Shakugan no Shana",
+    "category": "Acción , Drama , Fantasía , Romance",
+    "score": "7/10",
+    "image": "https://images2.alphacoders.com/842/842788.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kaze sin estigma ",
+    "category": "Acción , Romance , Sobrenatural",
+    "score": "7/10",
+    "image": "https://images2.alphacoders.com/231/231560.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Accel World",
+    "category": "Acción , Romance , Ciencia ficción",
+    "score": "/10",
+    "image": "https://images2.alphacoders.com/702/702222.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Sakura-sou no Pet na Kanojo",
+    "category": "Drama , Romance",
+    "score": "7/10",
+    "image": "https://images6.alphacoders.com/102/1028670.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Golden Time",
+    "category": "Drama, Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/91c29c70879f0dc7ed0f5312a9b734bb702cffd8f48b5b3534d85dce6042e44f.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Tensei shitara Slime Datta Ken",
+    "category": "Isekai",
+    "score": "8/10",
+    "image": "https://wp.radiojhero.com/wp-content/uploads/2022/07/5918531.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kumo desu ga, Nani ka?",
+    "category": "Isekai",
+    "score": "8/10",
+    "image": "https://wallpaper.forfun.com/fetch/89/8949f975f10ed4b28429e562f9314274.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Mairimashita! Iruma-kun",
+    "category": "Isekai",
+    "score": "8/10",
+    "image": "https://static.animecorner.me/2022/08/iruma-kun-season-3-key-visual-1024x535.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Guilty Crown",
+    "category": "Isekai",
+    "score": "8/10",
+    "image": "https://images2.alphacoders.com/737/thumb-1920-737355.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Nisekoi",
+    "category": "Romance",
+    "score": "8/10",
+    "image": "https://i.pinimg.com/originals/9a/c2/2b/9ac22bba95fcd4bb6ff2d5cf20cd8b8c.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Yeon-ae Halujeon Zero",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://i.ytimg.com/vi/GQtqVe2GXqw/maxresdefault.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Uzaki-chan wa Asobitai! Double",
+    "category": "Romance",
+    "score": "8/10",
+    "image": "https://somoskudasai.com/wp-content/uploads/2022/03/portada_uzaki-chan-wa-asobitai-34.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kusuriya no Hitorigoto",
+    "category": "Drama , Misterio",
+    "score": "7/10",
+    "image": "https://i0.wp.com/ptanime.com/wp-content/uploads/2023/02/Kusuriya-no-Hitorigoto-anime-2023-first-PV-trailer-video-screenshot.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Nagato Yuki-chan no Shoushitsu",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://c.wallhere.com/photos/41/13/The_Melancholy_of_Haruhi_Suzumiya_Nagato_Yuki_Suzumiya_Haruhi_Asahina_Mikuru_Kyon_Koizumi_Itsuki-9284.png!s1",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Bakemonogatari",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://funghidelmale.wordpress.com/wp-content/uploads/2016/12/5pjwyow.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Aishen Qiaokeli-ing...II",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://www.tvtime.com/_next/image?url=https%3A%2F%2Fartworks.thetvdb.com%2Fbanners%2Ffanart%2Foriginal%2F307812-1.jpg&w=3840&q=75",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Girls Bravo",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/0137369ca9081a88da92b7cc24e493a9f7d46a75f6f9d88f5508c26f37ec6d35.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Zero no Tsukaima",
+    "category": "Isekai, Romance",
+    "score": "7/10",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7gxBNr_qMINUDkHTA2fd1oXv3Rrwg5MuUV_U8TjxH15uJM1GOx7HJ4ph0JRkMcFwnEN9iBI8CtxdGcD4cDI9uifrqQDeCd_WyhgWJokK5DjEd3V3PHV3uEpF7TTlE8pkAgugo60IgN8XY/s1600/zero-no-tsukaima.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ookami to Koushinryou",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://pm1.aminoapps.com/6872/c1e45beb9c42e086a8ba2c3e36e310fa99f7b8d4r1-1680-1050v2_uhq.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Rosario to Vampire",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/0b8e4f2f80e3abb6f98fc2feeb93b6ad.jpe",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Mayoi Neko Overrun!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://image.tmdb.org/t/p/original/rplU1aOTLzKwM9zPO0atd9O63kt.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Mayo Chiki!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://i0.wp.com/ptanime.com/wp-content/uploads/2022/05/Mayo-Chiki-Imagem-Destaque.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Campione! Matsurowanu Kamigami to Kamigoroshi no Maou",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://img.sanctuary.fr/fiche/origin/45667.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ore no Imouto ga Konnani Kawaii Wake ga Nai.",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://tonkuniverse.wordpress.com/wp-content/uploads/2012/06/pic1.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ore, Twintail ni Narimasu",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://ryanlikestospeak.wordpress.com/wp-content/uploads/2015/03/gonna-be-the-twin-tail.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Tonari no Kaibutsu-kun",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://images2.alphacoders.com/689/689563.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kamisama Hajimemashita",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://i0.wp.com/ptanime.com/wp-content/uploads/2022/05/Kamisama-Hajimemashita-manga-imagem-poster.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ore no Kanojo to Osananajimi ga Shuraba Sugiru",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://wallpaper.forfun.com/fetch/50/504f26a9d2695cc7df9cdf0b55962db8.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kanojo ga Flag wo Oraretara",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://i0.wp.com/www.thegamingbuddha.com/wp-content/uploads/2014/04/Kanojo-ga-Flag-wo-Oraretara.jpg?ssl=1",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Hige wo Soru. Soshite Joshikousei wo Hirou",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://www.lavanguardia.com/peliculas-series/images/serie/backdrop/2021/4/w1280/u5lyhrnWDZ9kcAb6t5HpWj85XLh.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Horimiya",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://images6.alphacoders.com/132/thumb-1920-1320430.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Shin no Nakama ja Nai to Yuusha no Party wo Oidasareta node, Henkyou de Slow Life suru Koto ni Shimashita",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://www.animeunited.com.br/oomtumtu/2021/01/shin_no_nakama_teaser_logo-e1611150524504.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Isekai Ojisan",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://cdn.30nama.com/cover/30487269_30NAMA.webp?1657135173",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Chiyu Mahou no Machigatta Tsukaikata",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://manchanocel.com/wp-content/uploads/2024/01/chiyu-mahou-1.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Saikyou Onmyouji no Isekai Tenseiki",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://www.animeunited.com.br/oomtumtu/2022/09/portada_saikyou-onmyouji-4.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Isekai de Cheat Skill wo Te ni Shita Ore wa, Genjitsu Sekai wo mo Musou Suru: Level Up wa Jinsei wo Kaeta",
+    "category": "Isekai, Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/c71c28305e6984201ac70cc5bda417cbefc9078d61f4cd02ce26428213db9cee._SX1080_FMjpg_.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Yamada-kun to Lv999 no Koi wo Suru",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/ffad1b93800580a55173288141b9a321.jpe",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Rekishi ni Nokoru Akujo ni Naru zo",
+    "category": "Isekai, Romance",
+    "score": "7/10",
+    "image": "https://pic-bstarstatic.akamaized.net/ugc/03e0ff438a0eab60d7165a990b179262.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kanokon",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://sphinxanime.com/wp-content/uploads/2018/03/kanokon-serie-wallpaper-sphinxanime-660x330.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Akaneiro ni Somaru Saka ",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://w0.peakpx.com/wallpaper/601/935/HD-wallpaper-yuhi-and-minato-minato-akane-iro-ni-somaru-saka-yuhi-anime.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kiss x Sis",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/946/256/851/anime-kiss-x-sis-suminoe-riko-suminoe-ako-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Asobi ni Iku yo!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://image.tmdb.org/t/p/original/A9yADESwsEFYTd1KmcXNtw7KEQl.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kämpfer",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://images3.alphacoders.com/229/thumb-1920-229797.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Omamori Himari",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://image.tmdb.org/t/p/original/dtbj8vdXqS813QvirK3x1GWPRaZ.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ladies versus Butlers!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://live.staticflickr.com/4684/25089799618_2b065da76e_h.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "B-gata H-kei",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/d562f5a1126a929965a3225058e091e02471c63f42926f9db627d05cba5532c2.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Highschool of the Dead",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/b4a77b5abb856eb63bdc68bc7b9234e396b1c002001abd63bb96ca362d615164.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kami nomi zo Shiru Sekai",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/175/148/1020/kami-kami-nomi-kami-nomi-zo-shiru-sekai-keima-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Yosuga no Sora",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://blinkanime.com/wp-content/uploads/2024/07/HD-wallpaper-yosuga-no-sora-background-kasugano-sora.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Dragon Crisis!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/5a2a7d864fd9231f151ea4089c5301d0897641ad0a9c7f5920cf6b0e6d9dedf5.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Astarotte no Omocha! ",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://yoiyume.wordpress.com/wp-content/uploads/2011/04/zz9.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Mashiro-iro Symphony: The Color of Lovers",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/584be5bb258d48157dc9c9cea9e083d4.jpe",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Boku wa Tomodachi ga Sukunai",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://i1.sndcdn.com/artworks-000144031393-c1iauk-t500x500.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Sankarea",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://cdn.suwalls.com/wallpapers/anime/rea-sanka-sankarea-undying-love-37226-2560x1440.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "High School DxD",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/4/r/o/medium-na-highschool-dxd-matte-finish-poster-pop0330-original-imagzfxfnf9xxwfg.jpeg?q=90&crop=false",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Oda Nobuna no Yabou",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://cdn.statically.io/gh/Anime-Sama/IMG/img/contenu/oda-nobuna-no-yabou.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Koi to Senkyo to Chocolate",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/00bd5a6a0b160b8fe08e44779afad95d9976693f72b27e3404cd2daf8793dfa2.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Tasogare Otome x Amnesia",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://images7.alphacoders.com/489/thumb-1920-489538.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Dakara Boku wa, H ga Dekinai",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://c.wallhere.com/photos/c1/e0/Dakara_Boku_Wa_H_Ga_Dekinai_Lisara_Restall_Cule_Zeria_Okura_Mina_Fukumune_Iria_Kaga_Ry_suke_anime-264523.jpg!d",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Arcana Famiglia",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://laboratorioexperimentalsite.wordpress.com/wp-content/uploads/2017/06/punch_arcana_famiglia_-_12_hd-mkv_snapshot_18-02_5b2012-09-17_15-47-545d.jpg?w=1000",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kono Naka ni Hitori, Imouto ga Iru!",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://gyabbo.wordpress.com/wp-content/uploads/2012/06/kono-naka-ni-hitori-imouto-ga-iru-full-1016153.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Oniichan dakedo Ai sae Areba Kankeinai yo ne! ",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://www.animenewsnetwork.com/images/encyc/A14661-2728226457.1345179300.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Hentai Ouji to Warawanai Neko",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/767/344/961/anime-hentai-ouji-to-warawanai-neko-tsukiko-tsutsukakushi-y%C5%8Dto-yokodera-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Kotoura-san",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/29ccfae6fadd9adbcbbc7b0ccaa0b5e9.jpe",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Date A Live ",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/2819db1794db0ce79f0cf765a60b76d2f6e3df87ab11975a3096f0767c3ce9e4.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Saikin, Imouto no Yousu ga Chotto Okashiinda ga",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://www.intoxianime.com/wp-content/uploads/2017/03/Saikin-Imouto-no-Yousu-ga-Chotto-Okashiinda-ga.png",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Outbreak Company",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/0ea706544c9871df5086570e47fb060bc162479ef66af827a98a7c7a638cbf1b.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Mikakunin de Shinkoukei",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://external-preview.redd.it/IOq_kyw7vQRN1l01ohlRPufd5L3XkBtPAhUxIPDqGkE.png?format=pjpg&auto=webp&s=44ee22b7f03639104c7b52075b21d5ce74393e39",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Hitsugi no Chaika",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://blog.draggle.org/wp-content/uploads/2014/10/hitsugi_no_chaika_II_01_1.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Seiken Tsukai no World Break",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://wallpaper.forfun.com/fetch/d4/d41ec493b6412a24519cd2976d85f0d4.jpeg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Seireitsukai no Blade Dance",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://m.media-amazon.com/images/S/pv-target-images/b0ed80b4a3e8e322b4f6990d81732e3fe204eef70d2084e9731d04489bbd9772.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Shinmai Maou no Testament",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://c4.wallpaperflare.com/wallpaper/776/653/272/anime-shinmai-maou-no-testament-basara-toujou-mio-naruse-shinmai-maou-no-testament-hd-wallpaper-preview.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ookami Shoujo to Kuro Ouji",
+    "category": "Romance",
+    "score": "7/10",
+    "image": "https://www.tvtime.com/_next/image?url=https%3A%2F%2Fartworks.thetvdb.com%2Fbanners%2Ffanart%2Foriginal%2F284563-5.jpg&w=3840&q=75",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "S-Rank Monster no Behemoth dakedo, Neko to Machigawarete Elf Musume no Pet toshite Kurashitemasu",
+    "category": "Romance",
+    "score": "/10",
+    "image": "https://image.tmdb.org/t/p/original/Nxy4XruVcSiB4bkgAWLiE9xGQO.jpg",
+    "episode": "2/?",
+    "status": "Viendo"
+    },
+    {
+    "title": "Shangri-La Frontier: Kusoge Hunter, Kamige ni Idoman to su",
+    "category": "Acción, Aventuras, Fantasía, Shounen",
+    "score": "7/10",
+    "image": "https://images4.alphacoders.com/134/1341732.jpeg",
+    "episode": "12/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "Haikyuu",
+    "category": "Deporte",
+    "score": "7/10",
+    "image": "https://i0.wp.com/ovicio.com.br/wp-content/uploads/2022/12/20221206-ovicio-haikyuu-4.jpg?fit=1920%2C1080&ssl=1",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Salaryman ga Isekai ni Ittara Shitennou ni Natta Hanashi",
+    "category": "Isekai",
+    "score": "7/10",
+    "image": "https://www.animeunited.com.br/oomtumtu/2024/07/imagem_2024-07-21_140401500-e1721581778703.png",
+    "episode": "12/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "Possibly the Greatest Alchemist of All Time",
+    "category": "Isekai",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/d37491e7cacec5bd690e639db00cbef6.jpg",
+    "episode": "1/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "I Want to Escape from Princess Lessons",
+    "category": "Romance",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/44093cd4362d21915a94aa2dff632fcf.jpg",
+    "episode": "1/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "Taimadou Gakuen 35 Shiken Shoutai",
+    "category": "Romance",
+    "score": "?/10",
+    "image": "https://vocesabianime.com/wp-content/uploads/2020/03/%E3%81%8A%E3%81%AF%E3%82%88%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99%E3%80%81%E6%9C%AC%E6%97%A5%E3%82%82%E3%82%88%E3%82%8D%E3%81%97%E3%81%8F%E3%81%8A%E9%A1%98%E3%81%84%E3%81%97%E3%81%BE%E3%81%99%E3%80%82.jpg",
+    "episode": "1/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Juuou Mujin no Fafnir",
+    "category": "Acción , Fantasía , Romance",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/91e7bb6ba3713af017062bbbf4dbeb01.jpg",
+    "episode": "1/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Ore ga Ojousama Gakkou ni Shomin Sample Toshite Gets♥Sareta Ken",
+    "category": "Comedia , Romance",
+    "score": "?/10",
+    "image": "https://wallpaperaccess.com/full/3441963.jpg",
+    "episode": "1/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Trinity Seven",
+    "category": "Acción , Fantasía , Romance",
+    "score": "?/10",
+    "image": "https://preview.redd.it/1wci874ocutb1.jpg?auto=webp&s=d1ac120b43adec16f8bb3a828bc11c1ef5c85953",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Absolute Duo",
+    "category": "Acción , Fantasía , Romance",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/fab8fa3aea0f4316a2939ca2509e6fd7.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Rakudai Kishi no Cavalry",
+    "category": "Acción , Comedia , Fantasía , Romance , Ciencia ficción , Ecchi",
+    "score": "?/10",
+    "image": "https://couthi.wordpress.com/wp-content/uploads/2015/12/12318341_685934918172679_1867401701_o.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Gakusen Toshi Asterisk",
+    "category": "Acción , Comedia , Fantasía , Romance , Ciencia ficción , Ecchi",
+    "score": "?/10",
+    "image": "https://animenew.com.br/wp-content/uploads/2015/09/Gakusen-Toshi-Asterisk1-jpg.webp",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Nisekoi",
+    "category": "Comedia , Romance",
+    "score": "?/10",
+    "image": "https://www.intoxianime.com/wp-content/uploads/2023/06/nisekoi.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Yamada-kun to 7-nin no Majo",
+    "category": "Comedia , Misterio , Romance , Sobrenatural",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/f0f9febdb75925be98ffc36a7a98b4a8.jpe",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "¡Okusama ga Seitokaichou! ",
+    "category": "Comedia , Romance , Ecchi",
+    "score": "?/10",
+    "image": "https://i.pinimg.com/736x/2b/e8/03/2be8031b301482aa151895e2f432ebd8.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Saijaku Muhai en Bahamut ",
+    "category": "Acción , Fantasía , Romance , Ecchi",
+    "score": "?/10",
+    "image": "https://pm1.aminoapps.com/6635/cc411c3a85a05c5e39518a2dc65126afb9094fb2_00.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Hundred",
+    "category": "Acción , Fantasía , Romance",
+    "score": "?/10",
+    "image": "https://lh6.googleusercontent.com/VhXIweGFM-jA1t-Jg-wcdUPSx36mJKba_N8fr2PkdBjBJ_qgXoqnf6kR1TqdSvfc4DQXF-x0iCwMO_-0Lw_MF-DBdIq-59vW5enHcZqDTR47oRLdN313OFo7ZlOLstlzZ6QIeMD5vp0Hmhmhwf4aFShFyBTdyzF2pI5OchBe0O9KZki6-0icJs7b2g",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Netoge no Yome wa Onnanoko ja Nai to Omotta?",
+    "category": "Fantasía , Romance",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/14519a9fcdb4a5de67c5b1aadb8143d4.jpg",
+    "episode": "12/12",
+    "status": "Completados"
+    },
+    {
+    "title": "Bogus Skill Fruitmaster About that time I became able to eat unlimited numbers of Skill Fruits (that kill you)",
+    "category": "Acción, Aventuras, Fantasía",
+    "score": "?/10",
+    "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/eefadc473698c7f6a1e8b53b820f24e7.jpg",
+    "episode": "12/12",
+    "status": "Viendo"
+    },
+    {
+    "title": "I'm a Noble on the Brink of Ruin, So I Might as Well Try Mastering Magic",
+    "category": "Acción, Aventuras, Fantasía",
+    "score": "7/10",
+    "image": "https://external-preview.redd.it/im-a-noble-on-the-brink-of-ruin-so-i-might-as-well-try-v0-YtvP__WFT86zZnmMjgaQyM9bVIvkQ15UiFNZsSnV8Zs.jpg?auto=webp&s=67c1b1d953c1a81cfe7171480dfd84c0bc7877ec",
+    "episode": "2/12",
+    "status": "Viendo"
+    },
+    
+    {
+        "title": "The 100 Girlfriends Who Really, Really, Really, Really, REALLY Love You",
+        "category": "romance",
+        "score": "7/10",
+        "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/530b81ea91a57829a9851e68b96db82c.jpg",
+        "episode": "12",
+        "status": "Viendo"
+        },
+        
+        {
+        "title": "Tower of God",
+        "category": "shounen",
+        "score": "7/10",
+        "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/17d5c4c897b235b8c887a17c43816091.jpg",
+        "episode": "26/26",
+        "status": "Completados"
+        },
+        {
+        "title": "You are Ms. Servant",
+        "category": "Acción, Comedia, Drama, Romance",
+        "score": "?",
+        "image": "https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/ff503d8b939e73ed62f126b4ae5c7909.jpg",
+        "episode": "3/12",
+        "status": "Viendo"
+        },
+        {
+        "title": "The Ossan Newbie Adventurer, Trained to Death by the Most Powerful Party, Became Invincible",
+        "category": " Fantasia, Aventura, Accion",
+        "score": "7/10",
+        "image": "https://i0.wp.com/www.animefeminist.com/wp-content/uploads/2024/07/Screenshot-2024-07-02-at-22.21.42-2.png?resize=810%2C455&ssl=1",
+        "episode": "12/12",
+        "status": "Completados"
+        },
+        {
+        "title": "The World's Finest Assassin Gets Reincarnated in Another World as an Aristocrat",
+        "category": "Isekai ,Fantasia, Accion",
+        "score": "7/10",
+        "image": "https://image.tmdb.org/t/p/original/aTIE2FOGSl0jFP46kSFc47vUKIp.jpg",
+        "episode": "12/12",
+        "status": "Completados"
+        },
+        {
+        "title": "Welcome to Japan, Ms. Elf!",
+        "category": "Comedia , isekai",
+        "score": "7/10",
+        "image": "https://staticg.sportskeeda.com/editor/2025/01/1063b-17365334151835-1920.jpg",
+        "episode": "3/12",
+        "status": "Viendo"
+        },
+        {
+        "title": "I Left my A-Rank Party to Help My Former Students Reach the Dungeon Depths!",
+        "category": "Acción, Aventura, Comedia, Fantasía",
+        "score": "4/10",
+        "image": "https://www.gamersegames.com.br/wp-content/uploads/2025/01/I-Left-my-A-Rank-Party-to-Help-My-Former-Students-Reach-the-Dungeon-Depths-1.webp",
+        "episode": "3/12",
+        "status": "Completados"
+        },
+        {
+        "title": "The Red Ranger Becomes an Adventurer in Another World",
+        "category": "Isekai ,Fantasia, Accion",
+        "score": "7/10",
+        "image": "https://www.animefeminist.com/wp-content/uploads/2025/01/The-Red-Ranger-Becomes-an-Adventurer-in-Another-World-1-scaled.jpg",
+        "episode": "3/12",
+        "status": "Viendo"
+        },
+        {
+        "title": "The Apothecary Diaries",
+        "category": "Drama, Shoujo",
+        "score": "8/10",
+        "image": "https://images8.alphacoders.com/138/1380389.jpg",
+        "episode": "12/12",
+        "status": "Viendo"
+        },
+        {
+        "title": "Soul Eater",
+        "category": "Acción, Aventuras, Comedia, Fantasía, Shounen, Sobrenatural",
+        "score": "8/10",
+        "image": "https://c4.wallpaperflare.com/wallpaper/267/894/409/anime-soul-eater-soul-evans-maka-albarn-wallpaper-preview.jpg",
+        "episode": "51/51",
+        "status": "Completados"
+        },
+        {
+        "title": "Soul Eater Not!",
+        "category": "Acción, Comedia, Ecchi, Shounen, Sobrenatural",
+        "score": "?",
+        "image": "https://wallpaper.forfun.com/fetch/be/be6e55a6149417c8f9dab6070d500fb2.jpeg",
+        "episode": "12/12",
+        "status": "En espera"
+        },
+        {
+        "title": "Wistoria: Wand and Sword",
+        "category": "Acción, Aventuras, Escolares, Fantasía, Shounen",
+        "score": "7/10",
+        "image": "https://images.alphacoders.com/136/1369627.jpeg",
+        "episode": "12/12",
+        "status": "Completados"
+        }
+    ];   
+    
+    // Modificar el array mediaItems para incluir los tres tipos
+    const mediaItems = [
+        // Mantener todos los animes existentes con type: 'anime'
+        ...animes.map(anime => ({...anime, type: 'anime'})),
+        // Ejemplos de series
+        {
+            "title": "Breaking Bad",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHGZV4jVq5iq7S7FeUDNTjSuxwuvCI8n0Jfg&s",
+            "episode": "62/62",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "Dr House",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://beam-images.warnermediacdn.com/BEAM_LWM_DELIVERABLES/1679eba6-66a9-40e6-8504-bf2aaba329e7/5cebb677-6fe3-4615-8aeb-d2ef74320f35?host=wbd-images.prod-vod.h264.io&partner=beamcom",
+            "episode": "62/62",
+            "status":"Viendo",
+            "type": "series"
+        },
+        {
+            "title": "The Walking Dead",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/933E0D6CAF547F41DEB8C66ECE2DC2B7246A6590FF25AEA936859FE934336EB5/scale?width=1200&aspectRatio=1.78&format=webp",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "Stranger Things",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://occ-0-8407-1360.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABZHclp-1JynUWnj9GdlOIvdYHUxD_rBSmk_Q53L_xPrPHOrv9tobzVvkBJCOshIp4P0hDc_3Zus-1ACtLZjGd0GF682Bf46iZQXVIk4hwY1mWsSG_9enpVAi_qNn08Nr-kAT2A.jpg?r=c68",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "El Juego del Calamar",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://ca-times.brightspotcdn.com/dims4/default/5248b88/2147483647/strip/true/crop/5906x3937+0+0/resize/2400x1600!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F58%2F4e%2Fa59edfeb4c00b85217973e5560f6%2Fsquidgame-unit-104-442.jpg",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "La Casa de Papel",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://cdn.mos.cms.futurecdn.net/9mWyVUzDofCEbxpp7zcXuj.jpg",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "Peaky Blinders",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "    https://cdn.webshopapp.com/shops/268192/files/433182623/the-peaky-blinders.jpg",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "La Ley de los Audases",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQZBxHwgdckeDrNVMZu9A6gfhhoEYrNM6tU34b_E_z813NtRn7TQUpP3c-kIL3p0zBWZgAsXx6ExFMVSFEmi7f0mRQB1EThuayLZdIwOofs_XxQ73XgfxndlWSsjWVhaGAGNSV_TU3izQxYy-IoeAcRBmNy8.jpg?r=2da",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "Arcane",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://es.gizmodo.com/app/uploads/2023/11/ee399381a882cf98af4dd0f6dc5f2398.jpg",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "El Encargado",
+            "category": "Comedia",
+            "score": "10/10",
+            "image": "https://www.ciudad.com.ar/resizer/v2/la-familia-basurto-accionaria-contra-el-encargado-BVANDPZCFVEDXOESHEL4NVEQR4.png?auth=d1c33f0dc8095e8f579b2654c728a1416938f05fc025ac4d74db16f116dc833e&width=767",
+            "episode": "T11/T11",
+            "status":"Completados",
+            "type": "series"
+        },
+        {
+            "title": "Los Simpson",
+            "category": "Comedia",
+            "score": "10/10",
+            "image": "https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/30F15DCD4C14B8515FCE3652637EE2E9D61D715B07CA485878889429D393CFD5/scale?width=1200&aspectRatio=1.78&format=webp",
+            "episode": "T11/T11",
+            "status":"Viendo",
+            "type": "series"
+        },
+        {
+            "title": "Casados con Hijos",
+            "category": "Comedia",
+            "score": "10/10",
+            "image": "https://resizer.glanacion.com/resizer/v2/archivo-casados-con-hijos-llegara-a-netflix-este-KSVN6FB3VZEGNEL2WQOIH4T5OQ.jpg?auth=29edea2f6e28371e06cc737648d50823c55c634b981d874bb64e38f6df1f7c10&width=1280&height=854&quality=70&smart=true",
+            "episode": "T11/T11",
+            "status":"Viendo",
+            "type": "series"
+        },
+        {
+            "title": "Pablo Escobar, el patrón del mal",
+            "category": "Narcos",
+            "score": "10/10",
+            "image": "https://caracolinternacional.com/wp-content/uploads/2024/04/Pablo-Escobar-el-patron-del-mal.jpg",
+            "episode": "T11/T11",
+            "status":"Viendo",
+            "type": "series"
+        },
+    
+    
+    
+    
+    
+        // Películas
+        {
+            "title": "Chernobyl: La Película",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://img.freepik.com/fotos-premium/escalofriante-cartel-pelicula-que-representa-desastre-nuclear-chernobyl-paisaje-desolado_40687-572.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Capitán América: El Primer Vengador",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/95C976CA3FF6E5D7434874C3D705E133D8F1AF970ED3A319D90CD7C8BC36A83D/scale?width=1200&aspectRatio=1.78&format=webp",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Linea de Fuego",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://m.media-amazon.com/images/S/pv-target-images/22a1dc784ed79611b4fbf9227473b9c977dfdeae1d8f6c33344bde7300ed6d21.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Sin Novedad en el Frente",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://hips.hearstapps.com/hmg-prod/images/sin-novedad-en-el-frente-netflix-1667731037.jpeg?crop=0.75xw:1xh;center,top&resize=1200:*",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Atrapame si puedes",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://play-lh.googleusercontent.com/proxy/GUM0hYdiRwGkVJRC8c0ZQxGurBXJg1ABPxDTc4C7MIRyITsJVJFiBganN04TuCe9Dcg2Qoh2M9aHZ4emonVIC3rhooXSiN4426-Wo809rj-_0xENMA=s1920-w1920-h1080",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "El Planeta de los Simios: Nuevo Reino",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://i.blogs.es/c52f60/captura-de-pantalla-2023-11-10-a-las-16.23.38/1366_2000.jpeg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Sing: ¡ven y canta!",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://xpot.sv/wp-content/uploads/2024/10/sing-1024x554.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Ouija: La Película",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://hips.hearstapps.com/es.h-cdn.co/fotoes/images/peliculas/ouija-2014/travesuras-de-adolescente-con-sello-blumhouse/28136756-2-esl-ES/Travesuras-de-adolescente-con-sello-Blumhouse.jpg?crop=0.822265625xw:1xh;center,top&resize=1200:*",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Ouija: El origen del mal",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://beam-images.warnermediacdn.com/BEAM_LWM_DELIVERABLES/75a74300-c086-497a-8cc7-6b1e1cc1f172/62c2ff0f275f52a12f818793998bcc40bfbfce45.jpg?host=wbd-images.prod-vod.h264.io&partner=beamcom",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+    
+        {
+            "title": "Corazones de hierro",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://m.media-amazon.com/images/S/pv-target-images/11e95c583259b04a7330a0c515813124775bb1b938e7896c74c8035fc600106a._SX1080_FMjpg_.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Hermanos de sangre",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://occ-0-8407-1360.1.nflxso.net/dnm/api/v6/9pS1daC2n6UGc3dUogvWIPMR_OU/AAAABfn6qvKq0_VZ4C8Sk_00afqYWNBMMYjAonf1JaTqbwCunimI-rmVmh2yKH3vvvXlt_Jb1s-IuiAiJcbj7AbqmS7gnl1y6bJZ7CA1wZiCTmbXqM9ZPsnRgvYm.jpg?r=2fe",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Guerra Mundial Z",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/media/image/2013/06/231595-critica-guerra-mundial-z.jpg?tf=3840x",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "El precio del mañana",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://www.cinevistablog.com/wp-content/uploads/2011/11/el-precio-del-manana-in-time-de-andrew-niccol_opt2_.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Monsters 103: Emociones del dragón...",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://occ-0-8407-1722.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABYBCl4BpT6wGo5Mymc1RwF-cOTPlfxJhAIzSkP5pC9WRrXsyqF1zAqH5Dvi7da1ffykYFW_WIvMIU11b-E8MkIrg_3q1Wvr0xk0H.jpg?r=3ab",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        {
+            "title": "Red Social",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://decine21.com/img/upload/videos/obras/la-red-social-21036/la-red-social-21036-t1.mp4.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+        
+        {
+    
+            "title": "Jugar en casa",
+            "category": "Drama, Crimen",
+            "score": "10/10",
+            "image": "https://lacorriente.com/wp-content/uploads/2022/02/jugar.en_.casa_.jpg",
+            "duration": "175 min",
+            "status": "Completados",
+            "type": "movie"
+        },
+    
+        // HENTAI
+    
+        {
+    
+            "title": "Overflow",
+            "category": "Hentai",
+            "score": "10/10",
+            "image": "https://i.pinimg.com/736x/c7/e8/6e/c7e86e83b60b753bfe0647fc677f2140.jpg",
+            "status": "Completados",
+            "episode":"8/8",
+            "type": "Hentai"
+        }
+    ];
+    
+    function init() {
+        setupEventListeners();
+        // Mostrar animes por defecto al cargar la página
+        const defaultContent = mediaItems.filter(item => item.type === 'anime');
+        displayContent(defaultContent);
+        updateStats();
+
+        // Agregar manejo del botón toggle
+        document.getElementById('toggleFormButton').addEventListener('click', function() {
+            const form = document.getElementById('addContentForm');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                this.textContent = '-';
+            } else {
+                form.style.display = 'none';
+                this.textContent = '+';
+            }
+        });
+    }
+    
+    
+    const elements = {
+        gallery: document.getElementById('animeGallery'),
+        sidebar: document.querySelector('.sidebar'),
+        mainSearch: document.getElementById('mainSearch'),
+        sidebarSearch: document.getElementById('sidebarSearch'),
+        body: document.body
+    };
+    
+    
+    function toggleSidebar() {
+        elements.sidebar.classList.toggle('show-sidebar');
+        elements.body.classList.toggle('sidebar-active');
+    }
+    
+    function createAnimeCard(anime) {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.innerHTML = `
+        <img src="${anime.image}" alt="${anime.title}" loading="lazy" class="anime-image">
+        <div class="anime-info">
+            <h2 class="anime-title" style="color: rgb(163, 159, 154);">${anime.title}</h2>
+            <p class="anime-category" style="color: rgba(168,160,149);">${anime.category}</p>
+            <p class="episode" style="color:rgb(168,160,149);">Vistos: ${anime.episode}</p>
+            <p class="anime-score">${anime.score}</p>
+        </div>
+    `;
+    
+    
+        // Agregar evento de clic a la imagen para abrir el modal
+        const imgElement = card.querySelector('.anime-image');
+        imgElement.addEventListener('click', function() {
+            const modal = document.getElementById('modal');
+            const imgModal = document.getElementById('img-modal');
+            modal.style.display = 'flex'; // Mostrar el modal
+            imgModal.src = this.src; // Establecer la fuente de la imagen en el modal
+        });
+    
+        return card;
+    }
+    
+    function displayAnimes(animeList) {
+        elements.gallery.innerHTML = ''; // Limpiar la galería
+        const fragment = document.createDocumentFragment();
+    
+        if (animeList.length === 0) {
+            // Crear un mensaje de "Sin Resultados"
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.className = 'no-results';
+            noResultsMessage.textContent = '❌ Sin Resultados';
+            
+            elements.gallery.appendChild(noResultsMessage);
+        } else {
+            animeList.forEach(anime => {
+                fragment.appendChild(createAnimeCard(anime));
+            });
+            elements.gallery.appendChild(fragment);
+        }
+        
+    
+    }
+    
+    function displayContent(items) {
+        elements.gallery.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+    
+        if (items.length === 0) {
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.className = 'no-results';
+            noResultsMessage.textContent = '❌ Sin Resultados';
+            elements.gallery.appendChild(noResultsMessage);
+        } else {
+            items.forEach(item => {
+                const card = createContentCard(item);
+                fragment.appendChild(card);
+            });
+            elements.gallery.appendChild(fragment);
+        }
+    
+    }
+    
+    // Actualizar las estadísticas para contar solo animes
+    function updateStats() {
+        const animeItems = mediaItems.filter(item => item.type === 'anime');
+    
+    
+        const stats = {
+            total: animeItems.length,
+            completed: animeItems.filter(item => item.status.includes('Completados')).length,
+            watching: animeItems.filter(item => item.status.includes('Viendo')).length,
+            abandoned: animeItems.filter(item => item.status.includes('Abandonados')).length,
+            holding: animeItems.filter(item => item.status.includes('En espera')).length
+        };
+    
+        Object.entries(stats).forEach(([key, value]) => {
+            const element = document.getElementById(`${key}Count`);
+            if (element) element.textContent = value;
+        });
+    }
+    
+    function updateHentaiStats() {
+        const hentaiItems = mediaItems.filter(item => item.type === 'Hentai');
+    
+        const stats = {
+            total: hentaiItems.length,
+            completed: hentaiItems.filter(item => item.status.includes('Completados')).length,
+            watching: hentaiItems.filter(item => item.status.includes('Viendo')).length,
+            abandoned: hentaiItems.filter(item => item.status.includes('Abandonados')).length,
+            holding: hentaiItems.filter(item => item.status.includes('En espera')).length
+        };
+    
+        Object.entries(stats).forEach(([key, value]) => {
+            const element = document.getElementById(`${key}Count`);
+            if (element) element.textContent = value;
+        });
+    }
+    
+    function updateSeriesStats() {
+        const seriesItems = mediaItems.filter(item => item.type === 'series');
+    
+        const stats = {
+            total: seriesItems.length,
+            completed: seriesItems.filter(item => item.status.includes('Completados')).length,
+            watching: seriesItems.filter(item => item.status.includes('Viendo')).length,
+            abandoned: seriesItems.filter(item => item.status.includes('Abandonados')).length,
+            holding: seriesItems.filter(item => item.status.includes('En espera')).length
+        };
+    
+        Object.entries(stats).forEach(([key, value]) => {
+            const element = document.getElementById(`${key}Count`);
+            if (element) element.textContent = value;
+        });
+    }
+    
+    function updateMovieStats() {
+        const movieItems = mediaItems.filter(item => item.type === 'movie');
+    
+        const stats = {
+            total: movieItems.length,
+            completed: movieItems.filter(item => item.status.includes('Completados')).length,
+            watching: movieItems.filter(item => item.status.includes('Viendo')).length,
+            abandoned: movieItems.filter(item => item.status.includes('Abandonados')).length,
+            holding: movieItems.filter(item => item.status.includes('En espera')).length
+        };
+    
+        Object.entries(stats).forEach(([key, value]) => {
+            const element = document.getElementById(`${key}Count`);
+            if (element) element.textContent = value;
+        });
+    }
+    
+    
+    
+    // Modificar la función de búsqueda
+    function filterAnimes() {
+        const searchTerm = (elements.mainSearch.value || elements.sidebarSearch.value).toLowerCase();
+        const currentView = document.querySelector('.filter-button.active')?.textContent || 'Todos los Animes';
+        
+        let filteredItems = mediaItems;
+        
+        // Aplicar filtro de tipo según la vista actual
+        if (currentView === 'Series/Películas') {
+            filteredItems = filteredItems.filter(item => item.type === 'series');
+        } else {
+            filteredItems = filteredItems.filter(item => item.type === 'anime');
+        }
+        
+        // Aplicar filtro de búsqueda
+        filteredItems = filteredItems.filter(item => 
+            item.title.toLowerCase().includes(searchTerm) ||
+            item.category.toLowerCase().includes(searchTerm)
+        );
+        
+        displayAnimes(filteredItems);
+    }
+    
+    // Modificar la función de filtrado
+    function filterByStatus(status) {
+        let filteredMedia;
+        
+        if (status === 'Series/Películas') {
+            // Mostrar solo series y películas
+            filteredMedia = mediaItems.filter(item => item.type === 'series');
+        } else if (status === 'Todos los Animes') {
+            // Mostrar solo animes
+            filteredMedia = mediaItems.filter(item => item.type === 'anime');
+        } else {
+            // Para otros filtros, mantener la separación por tipo
+            filteredMedia = mediaItems.filter(item => 
+                item.type === 'anime' && item.status.includes(status)
+            );
+        }
+        
+        displayAnimes(filteredMedia);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    document.addEventListener('DOMContentLoaded', init);
+    
+    // Código para manejar el modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modal');
+        const cerrar = document.getElementsByClassName('cerrar')[0];
+    
+        modal.style.display = 'none';
+    
+        cerrar.addEventListener('click', function() {
+            modal.style.display = 'none'; // Ocultar el modal
+        });
+    
+        modal.addEventListener('click', function() {
+            modal.style.display = 'none'; // Ocultar el modal
+        });
+    });
+    
+    function setupEventListeners() {
+        elements.mainSearch.addEventListener('input', filterAnimes);
+        elements.sidebarSearch.addEventListener('input', filterAnimes);
+        document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('sortOptions').addEventListener('change', sortAnimes); // Añadido
+    }
+    // Función mejorada para ordenar el contenido
+    function sortContent() {
+        const sortOption = document.getElementById('sortOptions').value;
+        const contentType = document.getElementById('contentTypeSelect').value;
+        
+        // Filtrar primero por tipo de contenido
+        let currentContent = mediaItems.filter(item => item.type === contentType);
+        
+        switch (sortOption) {
+            case 'default':
+                // Mantener el orden original
+                break;
+            case 'az':
+                currentContent.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'za':
+                currentContent.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            case 'rating':
+                currentContent.sort((a, b) => {
+                    // Manejar calificaciones especiales como "🔥" o "🎻"
+                    const getNumericScore = (score) => {
+                        if (score.includes('🔥') || score.includes('🎻')) return 10;
+                        return parseFloat(score) || 0;
+                    };
+                    
+                    const scoreA = getNumericScore(a.score);
+                    const scoreB = getNumericScore(b.score);
+                    return scoreB - scoreA;
+                });
+                break;
+        }
+        
+        displayContent(currentContent);
+    }
+    // Modificar la función de filtrado
+    function filterByStatus(status) {
+        const contentType = document.getElementById('contentTypeSelect').value;
+        let filteredContent = mediaItems.filter(item => item.type === contentType);
+        
+        if (status !== 'Todos los Animes') {
+            filteredContent = filteredContent.filter(item => {
+                if (Array.isArray(item.status)) {
+                    return item.status.includes(status);
+                }
+                return item.status === status;
+            });
+        }
+        
+        displayContent(filteredContent);
+    }
+    
+    
+    // Función para cambiar el placeholder del buscador
+    function updateSearchPlaceholder() {
+        const contentType = document.getElementById('contentTypeSelect').value;
+        const searchInputs = [elements.mainSearch, elements.sidebarSearch];
+        
+        let placeholder;
+        switch(contentType) {
+            case 'anime':
+                placeholder = 'Buscar anime...';
+                updateStats();
+    
+                break;
+            case 'series':
+                placeholder = 'Buscar serie...';
+                updateSeriesStats();
+    
+                break;
+            case 'movie':
+                placeholder = 'Buscar película...';
+                updateMovieStats();
+    
+                break;
+            case 'Hentai':
+                placeholder = 'Buscar Hentai...';
+                updateHentaiStats();
+    
+                break;
+    
+            default:
+                placeholder = 'Buscar...';
+        }
+    
+        searchInputs.forEach(input => {
+            if (input) input.placeholder = placeholder;
+        });
+    }
+    
+    
+    // Modificar la función de filtrado para incluir el tipo de contenido
+    function filterContent() {
+        const searchTerm = (elements.mainSearch.value || elements.sidebarSearch.value).toLowerCase();
+        const contentType = document.getElementById('contentTypeSelect').value;
+        
+        let filteredContent = mediaItems.filter(item => item.type === contentType);
+        
+        if (searchTerm) {
+            filteredContent = filteredContent.filter(item => 
+                item.title.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        displayContent(filteredContent);
+    }
+    
+    // Función mejorada para mostrar el contenido
+    
+    // Función para crear tarjetas según el tipo de contenido
+    function createContentCard(item) {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        
+        let episodeOrDuration = '';
+        if (item.type === 'movie') {
+            episodeOrDuration = `Duración: ${item.duration}`;
+        } else {
+            episodeOrDuration = `Vistos: ${item.episode}`;
+        }
+        
+        card.innerHTML = `
+            <img src="${item.image}" alt="${item.title}" loading="lazy" class="anime-image">
+            <div class="anime-info">
+                <h2 class="anime-title" style="color: rgb(163, 159, 154);">${item.title}</h2>
+                <p class="anime-category" style="color: rgba(168,160,149);">${item.category}</p>
+                <p class="episode" style="color:rgb(168,160,149);">${episodeOrDuration}</p>
+                <p class="anime-score">${item.score}</p>
+            </div>
+        `;
+        
+        // Mantener el evento del modal
+        const imgElement = card.querySelector('.anime-image');
+        imgElement.addEventListener('click', function() {
+            const modal = document.getElementById('modal');
+            const imgModal = document.getElementById('img-modal');
+            modal.style.display = 'flex';
+            imgModal.src = this.src;
+        });
+        
+        return card;
+    }
+    
+    function setupEventListeners() {
+        elements.mainSearch.addEventListener('input', filterContent);
+        elements.sidebarSearch.addEventListener('input', filterContent);
+        document.getElementById('contentTypeSelect').addEventListener('change', () => {
+            updateSearchPlaceholder();
+            filterContent();
+        });
+        document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('sortOptions').addEventListener('change', sortContent);
+    }
+    
+    // Modificar la función handleNewContent para que también genere el código
+    function handleNewContent(e) {
+        e.preventDefault();
+        
+        const newContent = {
+            title: document.getElementById('newTitle').value,
+            category: document.getElementById('newCategory').value,
+            score: document.getElementById('newScore').value,
+            image: document.getElementById('newImage').value,
+            episode: document.getElementById('newEpisode').value,
+            status: document.getElementById('newStatus').value,
+            type: document.getElementById('newType').value
+        };
+
+        // Agregar el nuevo contenido al array mediaItems
+        mediaItems.push(newContent);
+
+        // Generar el código del nuevo contenido
+        const newCode = `
+        {
+        "title": "${newContent.title}",
+        "category": "${newContent.category}",
+        "score": "${newContent.score}",
+        "image": "${newContent.image}",
+        "episode": "${newContent.episode}",
+        "status": "${newContent.status}"
+        },`;
+
+        // Crear un elemento temporal para copiar el código
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = newCode;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+
+        // Guardar en localStorage
+        localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
+
+        // Actualizar la visualización
+        const contentType = document.getElementById('contentTypeSelect').value;
+        const filteredContent = mediaItems.filter(item => item.type === contentType);
+        displayContent(filteredContent);
+
+        // Actualizar estadísticas según el tipo
+        switch(newContent.type) {
+            case 'anime':
+                updateStats();
+                break;
+            case 'series':
+                updateSeriesStats();
+                break;
+            case 'movie':
+                updateMovieStats();
+                break;
+            case 'Hentai':
+                updateHentaiStats();
+                break;
+        }
+
+        // Limpiar el formulario
+        e.target.reset();
+
+        // Mostrar mensaje de éxito y notificar que el código fue copiado
+        alert('Contenido agregado exitosamente.\nEl código ha sido copiado al portapapeles.');
+    }
+
+    // Asegurarse de que el event listener use la nueva función
+    function setupEventListeners() {
+        elements.mainSearch.addEventListener('input', filterContent);
+        elements.sidebarSearch.addEventListener('input', filterContent);
+        document.getElementById('contentTypeSelect').addEventListener('change', () => {
+            updateSearchPlaceholder();
+            filterContent();
+        });
+        document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('sortOptions').addEventListener('change', sortContent);
+        document.getElementById('addContentForm').addEventListener('submit', handleNewContent);
+    }
+    
+    
+        </script>
+</body>
+</html>
+
+
+
+
+
