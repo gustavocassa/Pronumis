@@ -2782,7 +2782,7 @@ select.filter-button:hover {
             }
         }
 
-    function handleSubmit(event) {
+       function handleSubmit(event) {
         event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
 
         // Obtiene los valores de los campos del formulario
@@ -2792,13 +2792,22 @@ select.filter-button:hover {
         const imageUrl = document.getElementById('imageUrl').value;
         const episodes = document.getElementById('episodes').value;
         const status = document.getElementById('status').value;
-        const type = document.getElementById('type').value;
 
-        // Crea un texto con toda la información
-        const content = `Título: ${title}\nCategoría: ${category}\nPuntuación: ${score}\nURL de la imagen: ${imageUrl}\nEpisodios: ${episodes}\nEstado: ${status}\nTipo: ${type}`;
+        // Crea un objeto con toda la información en formato JSON
+        const content = {
+            "title": title,
+            "category": category,
+            "score": score,
+            "image": imageUrl,
+            "episode": episodes,
+            "status": status
+        };
 
-        // Copia el contenido al portapapeles
-        navigator.clipboard.writeText(content).then(() => {
+        // Convierte el objeto a una cadena JSON
+        const jsonContent = JSON.stringify(content, null, 4); // Formato legible
+
+        // Copia el contenido JSON al portapapeles
+        navigator.clipboard.writeText(jsonContent).then(() => {
             alert('Contenido copiado al portapapeles!');
         }).catch(err => {
             console.error('Error al copiar el contenido: ', err);
