@@ -148,14 +148,15 @@
 .header {
   display: flex;
   align-items: center; /* Alinea verticalmente los elementos */
-  justify-content: center; /* Centra horizontalmente todos los elementos */
+  justify-content: space-between; /* Espacia los elementos horizontalmente */
   padding: 10px;
+  padding-left:30px;
   background-color: #f4f4f4; /* Color de fondo opcional */
   border-bottom: 2px solid #ccc; /* Línea opcional para separar el header */
   font-family: Arial, sans-serif; /* Fuente global */
   font-size: 16px; /* Tamaño de fuente uniforme */
   color: black; /* Letra negra */
-  gap: 20px; /* Espaciado entre los elementos */
+  position: relative; /* Necesario para centrar el search-container */
 }
 
 /* Estilo del logo */
@@ -169,12 +170,16 @@
   margin: 0;
   font-size: 16px; /* Tamaño uniforme */
   text-align: center;
+  flex-grow: 1; /* Permite que el título ocupe espacio adicional */
 }
 
 /* Contenedor de búsqueda */
 .search-container {
   display: flex;
   gap: 10px; /* Espaciado entre los elementos */
+  position: absolute; /* Posiciona el contenedor de búsqueda */
+  left: 50%; /* Mueve el contenedor al centro horizontal */
+  transform: translateX(-50%); /* Ajusta el contenedor para que quede perfectamente centrado */
 }
 
 .search-input {
