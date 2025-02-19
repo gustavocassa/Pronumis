@@ -142,23 +142,64 @@
         padding: 1rem;
       }
     }
+
+
+    /* Estilo general del header */
+.header {
+  display: flex;
+  align-items: center; /* Alinea verticalmente los elementos */
+  justify-content: space-between; /* Espacia los elementos horizontalmente */
+  padding: 10px;
+  background-color: #f4f4f4; /* Color de fondo opcional */
+  border-bottom: 2px solid #ccc; /* Línea opcional para separar el header */
+}
+
+/* Estilo del logo */
+.logo img {
+  width: 50px;
+  height: 50px;
+}
+
+/* Estilo del título */
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+  flex-grow: 1; /* Permite que el título ocupe espacio adicional */
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+  display: flex;
+  gap: 10px; /* Espaciado entre los elementos */
+}
+
+.search-input {
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.search-button {
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
 
-  <div class="container">
-        <a href="index.html" style="padding:5px;" title="Cerrar sesión">
-      <img src="https://i.ibb.co/L8s0GCz/logo-2.png" alt="Descripción del logo" style="width: 50px; height: 50px;">
-    </a>
-
-    <div class="user-info" id="user-info"></div>
-
-    <h1>Buscar Animes</h1>
-    <div class="search-container">
-      <input type="text" id="animeName" class="search-input" placeholder="Escribe el nombre del anime">
-      <button onclick="buscarAnimes()" class="search-button">Buscar</button>
-      <button onclick="borrarBusqueda()" class="search-button">Borrar búsqueda</button>
-    </div>
+  <header class="header">
+  <a href="index.html" class="logo" title="Cerrar sesión">
+    <img src="https://i.ibb.co/L8s0GCz/logo-2.png" alt="Descripción del logo">
+  </a>
+  <div class="user-info" id="user-info"></div>
+  <h1 class="title">Buscar Animes</h1>
+  <div class="search-container">
+    <input type="text" id="animeName" class="search-input" placeholder="Escribe el nombre del anime">
+    <button onclick="buscarAnimes()" class="search-button">Buscar</button>
+    <button onclick="borrarBusqueda()" class="search-button">Borrar búsqueda</button>
+  </div>
+</header>
 
     <div id="preloadedList" class="anime-list">
       <h2>Animes populares</h2>
