@@ -145,6 +145,10 @@
   </style>
 </head>
 <body>
+    <header>
+    <div class="user-info" id="user-info"></div>
+  </header>
+
   <div class="container">
     <h1>Buscar Animes</h1>
     <div class="search-container">
@@ -251,6 +255,13 @@
     }
 
     cargarAnimesPrecargados();
+
+        // Mostrar el usuario logueado en la esquina superior derecha
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      document.getElementById("user-info").textContent = `Usuario: ${loggedInUser}`;
+    }
+
   </script>
 </body>
 </html>
