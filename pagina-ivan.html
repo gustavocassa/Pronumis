@@ -138,7 +138,6 @@
             object-fit: cover;
             cursor: pointer;
         }
-   
 
         .anime-info {
             padding: 1rem;
@@ -160,11 +159,6 @@
             font-weight: bold;
             color: var(--primary-color);
         }
-
-.fecha {
-    margin: 5px 0;
-    font-size: 0.9rem;
-}
 
         /* Sidebar Styles */
         .sidebar {
@@ -365,15 +359,8 @@ select.filter-button:hover {
             .sidebar show-sidebar{
                 height: 100%;
                  }
-                 .anime-card img {
-        cursor: none; /* Deshabilitar interacción en pantallas pequeñas */
-        pointer-events: none; /* Deshabilitar clic */
-    }
-
 }
 
-
-        
     </style>
 </head>
 <body>
@@ -413,19 +400,17 @@ select.filter-button:hover {
         
     </div>
 
-   <div class="container">
+    <div class="container">
         <header>
             <div class="header">
                 <button class="menu-button" id="openSidebar">
                     <i class="fas fa-bars" style="color: black;"></i>
                 </button>
-                <a href="index.html" style="padding:5px;" title="Cerrar sesión">
+                <a href="pagina.html" style="padding:5px;">
                     <img src="https://i.ibb.co/L8s0GCz/logo-2.png" alt="Descripción del logo" style="width: 50px; height: 50px;">
                 </a>
             
                 <h1 style="color:rgb(5, 5, 5); margin-bottom: 5px;">Anime Diary</h1>
-                    <div class="user-info" id="user-info"></div>
-
             </div>
         </header>
         
@@ -476,52 +461,51 @@ select.filter-button:hover {
             </button>
         </div>
 
-
-        <div class="add-content-form" id="addContentForm" style="max-width: 450px; height: 690px; display: none; margin-bottom: 20px; background-color: rgba(24,26,27); padding: 20px; border-radius: 10px;">
+        <!-- Agregar el formulario aquí: -->
+        <div class="add-content-form" id="addContentForm" style="max-width:300px; display: none; margin-bottom: 20px; background-color: rgba(24,26,27); padding: 20px; border-radius: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="color: white; margin: 0;">Agregar Nuevo Contenido</h3>
                     <button id="hideFormButton" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
                 </div>
-            
-            <form id="animeForm" onsubmit="handleSubmit(event)" style="background-color:rgb(49 53 55);">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="title" placeholder="Título" required style="max-width:400px; border-color: white;">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="category" placeholder="Categoría (separar por comas)" required style="max-width:400px; border-color: white;">
-                </div>
-                <div class="form-group">
-                    <input type="number" class="form-control" id="score" placeholder="Puntuación (ej: 8/10)" min="0" max="10" step="0.1" style="max-width:400px; border-color: white;">
-                </div>
-                <div class="form-group">
-                    <input type="url" class="form-control" id="imageUrl" placeholder="URL de la imagen" style="max-width:400px; border-color: white;">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="episodes" placeholder="Episodios (ej: 12/12)" style="max-width:400px; border-color: white;">
-                </div>
-                <div class="form-group">
-                    <select class="form-control" id="status" required style="max-width:400px; border-color: white;">
-                        <option value="" disabled selected>Seleccionar Estado</option>
-                        <option value="viendo">Viendo</option>
-                        <option value="completado">Completado</option>
-                        <option value="en_espera">En Espera</option>
-                        <option value="abandonado">Abandonado</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select class="form-control" id="type" required style="max-width:400px; border-color: white;">
-                        <option value="" disabled selected>Seleccionar Tipo</option>
-                        <option value="tv">TV</option>
-                        <option value="movie">Película</option>
-                        <option value="ova">OVA</option>
-                        <option value="special">Especial</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-button" style="max-width:400px;">Agregar Contenido</button>
-            </form>
+                <form id="contentForm" style="display: grid; gap: 10px;">
+                    <input type="text" id="newTitle" placeholder="Título" required 
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newCategory" placeholder="Categoría (separar por comas)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newScore" placeholder="Puntuación (ej: 8/10)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newImage" placeholder="URL de la imagen" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newEpisode" placeholder="Episodios (ej: 12/12)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <select id="newStatus" required
+                            style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Estado</option>
+                    <option value="Completados">Completados</option>
+                    <option value="Viendo">Viendo</option>
+                    <option value="Abandonados">Abandonados</option>
+                    <option value="En espera">En espera</option>
+                </select>
                 
-    </div>
-            
+                <select id="newType" required
+                        style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Tipo</option>
+                    <option value="anime">Anime</option>
+                    <option value="series">Serie</option>
+                    <option value="movie">Película</option>
+                    <option value="Hentai">Hentai</option>
+                </select>
+                
+                <button type="submit" 
+                        style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Agregar Contenido
+                </button>
+            </form>
         </div>
 
         <div class="gallery" id="animeGallery"></div>
@@ -2645,26 +2629,27 @@ select.filter-button:hover {
         // Agregar el nuevo contenido al array mediaItems
         mediaItems.push(newContent);
 
-        // Función para llenar el formulario al hacer clic en una tarjeta
-        function fillForm(anime) {
-            document.getElementById('title').value = anime.title;
-            document.getElementById('category').value = anime.genres?.map(g => g.name).join(', ') || '';
-            document.getElementById('score').value = anime.score || '';
-            document.getElementById('imageUrl').value = anime.images.jpg.image_url;
-            document.getElementById('episodes').value = anime.episodes ? `${anime.episodes}/${anime.episodes}` : '';
-            
-            // Mapear el tipo de anime
-            const typeMap = {
-                'TV': 'tv',
-                'Movie': 'movie',
-                'OVA': 'ova',
-                'Special': 'special'
-            };
-            if (anime.type && typeMap[anime.type]) {
-                document.getElementById('type').value = typeMap[anime.type];
-            }
-        }
+        // Generar el código del nuevo contenido
+        const newCode = `
+        {
+        "title": "${newContent.title}",
+        "category": "${newContent.category}",
+        "score": "${newContent.score}",
+        "image": "${newContent.image}",
+        "episode": "${newContent.episode}",
+        "status": "${newContent.status}"
+        },`;
 
+        // Crear un elemento temporal para copiar el código
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = newCode;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+
+        // Guardar en localStorage
+        localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
 
         // Actualizar la visualización
         const contentType = document.getElementById('contentTypeSelect').value;
@@ -2708,12 +2693,7 @@ select.filter-button:hover {
         document.getElementById('addContentForm').addEventListener('submit', handleNewContent);
     }
     
-        // Mostrar el usuario logueado en la esquina superior derecha
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      document.getElementById("user-info").textContent = `Usuario: ${loggedInUser}`;
-    }
-
+    
         </script>
 </body>
 </html>
