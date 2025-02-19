@@ -2778,15 +2778,27 @@ select.filter-button:hover {
             }
         }
 
-        // Función para manejar el envío del formulario
-        function handleSubmit(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            console.log('Formulario enviado:', Object.fromEntries(formData));
-            // Aquí puedes agregar la lógica para guardar los datos
-            event.target.reset();
-        }
+// Función para manejar el envío del formulario
+function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const dataToCopy = Object.fromEntries(formData);
+    
+    // Convertir los datos a un formato de texto
+    const textToCopy = JSON.stringify(dataToCopy, null, 2); // Formato JSON con indentación
 
+    // Copiar al portapapeles
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            console.log('Datos copiados al portapapeles:', textToCopy);
+            alert('Datos copiados al portapapeles'); // Mensaje de confirmación
+        })
+        .catch(err => {
+            console.error('Error al copiar al portapapeles:', err);
+        });
+
+    event.target.reset(); // Reiniciar el formulario
+}
         </script>
 </body>
 </html>
