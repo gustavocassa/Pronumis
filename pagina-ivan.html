@@ -221,6 +221,7 @@ select.form-control {
             object-fit: cover;
             cursor: pointer;
         }
+   
 
         .anime-info {
             padding: 1rem;
@@ -242,6 +243,11 @@ select.form-control {
             font-weight: bold;
             color: var(--primary-color);
         }
+
+.fecha {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
 
         /* Sidebar Styles */
         .sidebar {
@@ -442,6 +448,11 @@ select.filter-button:hover {
             .sidebar show-sidebar{
                 height: 100%;
                  }
+                 .anime-card img {
+        cursor: none; /* Deshabilitar interacción en pantallas pequeñas */
+        pointer-events: none; /* Deshabilitar clic */
+    }
+
 }
 
 
