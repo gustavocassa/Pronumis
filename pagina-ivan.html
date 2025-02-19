@@ -9,107 +9,307 @@
     <title>Anime Tracker</title>
     <style>
         :root {
-    --primary-color: #007bff;
-    --primary-hover: #0056b3;
-    --background-dark: #1c2d42;
-    --modal-background: #1a1a1a;
-    --card-background: rgba(24,26,27);
-    --text-color: #fff;
-    --input-background: #2a2a2a;
-    --border-color: #ddd;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --sidebar-width: 280px;
-    --transition-speed: 0.3s;
-}
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f4f4f4;
+            --card-background: #fff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+            --transition-speed: 0.3s;
+        }
 
-/* Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-dark);
-    color: var(--text-color);
-    min-height: 100vh;
-    transition: margin-left var(--transition-speed) ease;
-    padding: 20px;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgb(28,45,66);
+            color: var(--text-color);
+            transition: margin-left var(--transition-speed) ease;
+            min-height: 100vh;
+            
+        }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* Search and Filter Styles */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color var(--transition-speed);
+            color: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            font-weight: 500;
+        }
+
+        .filter-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Gallery Styles */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, minmax(150px, 1fr));
+
+
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .anime-card {
+            background-color: rgba(24,26,27);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform var(--transition-speed);
+        
+        }
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5); /* Sombra difusa */
+
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .anime-info {
+            padding: 1rem;
+        }
+
+        .anime-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .anime-category {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .anime-score {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: calc(-1 * var(--sidebar-width));
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--card-background);
+            box-shadow: 2px 0 5px var(--shadow-color);
+            transition: left var(--transition-speed) ease;
+            z-index: 1000;
+            padding: 1.5rem;
+            color: white; /* Color del texto */
+            background-color: #444; /* Color de fondo de las tarjetas */
+
+        }
+
+        .sidebar.show-sidebar {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        
+.stats-container {
     display: flex;
-    gap: 20px;
+    flex-direction: column; /* Disposición vertical */
+    margin-top:80px;
 }
 
-/* Header Styles */
+.stat-card {
+    background-color: #1a1a1a; /* Color de fondo de las tarjetas */
+    margin: 10px 0; /* Margen entre tarjetas */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    text-align: center; /* Centrar texto */
+    flex: 1; /* Cada tarjeta ocupa el mismo espacio */
+    margin: 0 10px; /* Espacio entre las tarjetas */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 25px;
+
+}
+
+.stat-number {
+    font-size: 24px; /* Tamaño de fuente grande */
+    font-weight: bold; /* Negrita */
+}
+
+        body.sidebar-active {
+            margin-left: var(--sidebar-width);
+        }
+
+    
+
+        /*MODAL*/
+        .modal {
+            display: none; /* Ocultar el modal por defecto */
+            position: fixed; /* Fijar el modal en la ventana */
+            z-index: 9999; /* Asegurarse de que esté por encima de otros elementos */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ancho completo */
+            height: 100%; /* Alto completo */
+            overflow: auto; /* Habilitar desplazamiento si es necesario */
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro y difuminado */
+            display: flex; /* Usar flexbox para centrar el contenido */
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+        }
+
+        .modal-contenido {
+    width: 1200px; /* Ancho específico */
+    height: 600px; /* Alto específico */
+    object-fit: cover; /* Rellenar el contenedor manteniendo la relación de aspecto */
+}
+
+
+        .cerrar {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+
+
+
+
+        /*BARRA LATERAL*/
+        /* Cambiar el color de la barra de desplazamiento */
+::-webkit-scrollbar {
+    width: 12px; /* Ancho de la barra */
+}
+
+::-webkit-scrollbar-track {
+    background: #c2d0ff; /* Color del fondo de la barra */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #007bff; /* Color de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0059b8; /* Color de la barra al pasar el ratón */
+}
+
+
 header {
     position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.514);
-    padding-left: 10px;
-    display: flex;
     align-items: center;
     justify-content: center;
-}
+    top: 0; /* Mantiene el header en la parte superior */
+    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
+    background-color: rgba(255, 255, 255, 0.514);
+    padding-left: 10px;
 
-.header {
+}
+.no-results {
+    color: white; /* Color blanco */
+    align-items: center; /* Alinear al centro */
+    justify-content: center;
     display: flex;
-    align-items: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
+    text-align: center;
+    margin-top: 20px; /* Espacio superior opcional */
+    font-size: 1.5em; /* Tamaño de fuente opcional */
 }
 
-.menu-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--primary-color);
-}
+            #sidebarSearch {
+        width:225px;
+            }
 
-/* Search and Filter Styles */
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.search-container {
-    flex: 1;
-    min-width: 250px;
-    margin-bottom: 20px;
-}
-
-.search-input, .form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--border-color);
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    background-color: var(--input-background);
-    color: var(--text-color);
-    transition: border-color var(--transition-speed);
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-.filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.filter-button, select.filter-button {
+            select.filter-button {
     padding: 0.75rem 1.25rem;
     border: none;
     border-radius: 0.5rem;
@@ -118,209 +318,49 @@ header {
     cursor: pointer;
     transition: background-color var(--transition-speed);
     font-weight: 500;
-}
-
-select.filter-button {
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 30px;
 }
 
-.filter-button:hover, select.filter-button:hover {
+select.filter-button:hover {
     background-color: var(--primary-hover);
 }
 
-/* Gallery Styles */
-.gallery, .results-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-    padding: 1rem 0;
-}
-
-.anime-card {
-    background-color: var(--card-background);
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 6px var(--shadow-color);
-    transition: transform var(--transition-speed);
-    cursor: pointer;
-}
-
-.anime-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
-}
-
-.anime-card img {
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
-}
-
-.anime-info {
-    padding: 1rem;
-}
-
-.anime-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-}
-
-.anime-category {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-.anime-score {
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-/* Sidebar Styles */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: calc(-1 * var(--sidebar-width));
-    width: var(--sidebar-width);
-    height: 100vh;
-    background-color: #444;
-    box-shadow: 2px 0 5px var(--shadow-color);
-    transition: left var(--transition-speed) ease;
-    z-index: 1000;
-    padding: 1.5rem;
-    color: white;
-}
-
-.sidebar.show-sidebar {
-    left: 0;
-}
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.close-button {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-    color: var(--text-color);
-}
-
-/* Stats Styles */
-.stats-container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 80px;
-}
-
-.stat-card {
-    background-color: #1a1a1a;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.stat-number {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-/* Modal Styles */
-.modal {
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-contenido {
-    width: 1200px;
-    height: 600px;
-    object-fit: cover;
-}
-
-.cerrar {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: white;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-::-webkit-scrollbar-track {
-    background: #c2d0ff;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-hover);
-}
-
-/* No Results Message */
-.no-results {
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.5em;
-}
-
-/* Media Queries */
 @media (max-width: 768px) {
     #sidebarSearch {
-        margin-left: 12.5px;
-        margin-top: 60px;
-        margin-bottom: -40px;
-        width: 325px;
+        margin-left: 12.5px; 
+        
+        margin-top: 60px; 
+        margin-bottom:-40px;
+        width:325px;
     }
-
+  
     .container {
-        padding: 1rem;
-    }
+                padding: 1rem;
+            }
 
-    .sidebar {
-        width: 100%;
-        left: -100%;
-    }
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
 
-    .sidebar.show-sidebar {
-        height: 100%;
-    }
+            body.sidebar-active {
+                margin-left: 0;
+            }
 
-    body.sidebar-active {
-        margin-left: 0;
-    }
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            .sidebar show-sidebar{
+                height: 100%;
+                 }
 }
+
     </style>
 </head>
 <body>
