@@ -8,6 +8,68 @@
 
     <title>Anime Tracker</title>
     <style>
+        /*FORMULARIO*/
+        .content-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.form-input,
+.form-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: rgb(18, 18, 18);
+  color: white;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.form-select option {
+  background-color: rgb(25, 25, 25);
+}
+
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.submit-button:active {
+  transform: scale(0.98);
+}
+
+
+
+
+        
         :root {
             --primary-color: #007bff;
             --primary-hover: #0056b3;
@@ -469,41 +531,44 @@ select.filter-button:hover {
                     <h3 style="color: white; margin: 0;">Agregar Nuevo Contenido</h3>
                     <button id="hideFormButton" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
                 </div>
-<form id="animeForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="title" placeholder="Título" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="category" placeholder="Categoría (separar por comas)" required>
-                </div>
-                <div class="form-group">
-                    <input type="number" class="form-control" id="score" placeholder="Puntuación (ej: 8/10)" min="0" max="10" step="0.1">
-                </div>
-                <div class="form-group">
-                    <input type="url" class="form-control" id="imageUrl" placeholder="URL de la imagen">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="episodes" placeholder="Episodios (ej: 12/12)">
-                </div>
-                <div class="form-group">
-                    <select class="form-control" id="status" required>
-                        <option value="" disabled selected>Seleccionar Estado</option>
-                        <option value="viendo">Viendo</option>
-                        <option value="completado">Completado</option>
-                        <option value="en_espera">En Espera</option>
-                        <option value="abandonado">Abandonado</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select class="form-control" id="type" required>
-                        <option value="" disabled selected>Seleccionar Tipo</option>
-                        <option value="tv">TV</option>
-                        <option value="movie">Película</option>
-                        <option value="ova">OVA</option>
-                        <option value="special">Especial</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-button">Agregar Contenido</button>
+     <form id="contentForm" style="display: grid; gap: 10px;">
+                    <input type="text" id="newTitle" placeholder="Título" required 
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newCategory" placeholder="Categoría (separar por comas)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newScore" placeholder="Puntuación (ej: 8/10)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newImage" placeholder="URL de la imagen" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <input type="text" id="newEpisode" placeholder="Episodios (ej: 12/12)" required
+                           style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    
+                    <select id="newStatus" required
+                            style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Estado</option>
+                    <option value="Completados">Completados</option>
+                    <option value="Viendo">Viendo</option>
+                    <option value="Abandonados">Abandonados</option>
+                    <option value="En espera">En espera</option>
+                </select>
+                
+                <select id="newType" required
+                        style="padding: 8px; border-radius: 5px; background-color: rgb(18,18,18); color: white;">
+                    <option value="">Seleccionar Tipo</option>
+                    <option value="anime">Anime</option>
+                    <option value="series">Serie</option>
+                    <option value="movie">Película</option>
+                    <option value="Hentai">Hentai</option>
+                </select>
+                
+                <button type="submit" 
+                        style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Agregar Contenido
+                </button>
             </form>
         </div>
 
