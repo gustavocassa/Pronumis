@@ -370,7 +370,7 @@ select.filter-button:hover {
     max-height: 600px; /* Altura máxima para el contenedor de resultados */
 }
 
-.result-item {
+.result {
     flex: 0 1 calc(25% - 10px); /* Cada resultado ocupa el 25% del ancho menos un margen */
     margin-bottom: 20px; /* Espacio entre filas */
     background-color: #f0f0f0; /* Color de fondo de cada resultado */
@@ -378,6 +378,7 @@ select.filter-button:hover {
     padding: 10px; /* Espaciado interno de cada resultado */
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
 }
+
     </style>
 </head>
 <body>
@@ -535,13 +536,17 @@ select.filter-button:hover {
         </form>
     </div>
 <div class="results-container" id="searchResults">
-    <div class="result-item">Resultado 1</div>
-    <div class="result-item">Resultado 2</div>
-    <div class="result-item">Resultado 3</div>
-    <div class="result-item">Resultado 4</div>
-    <div class="result-item">Resultado 5</div>
-    <div class="result-item">Resultado 6</div>
-</div></div>
+    <div class="result">Resultado 1</div>
+    <div class="result">Resultado 2</div>
+    <div class="result">Resultado 3</div>
+    <div class="result">Resultado 4</div>
+    <div class="result">Resultado 5</div>
+    <div class="result">Resultado 6</div>
+    <!-- Más resultados -->
+</div>
+
+
+</div>
 
 
 
