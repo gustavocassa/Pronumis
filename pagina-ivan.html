@@ -340,6 +340,92 @@ select.filter-button:hover {
         width:325px;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    .container {
+    display: flex; /* Utiliza Flexbox para alinear los elementos en fila */
+    justify-content: space-between; /* Espacio entre el formulario y los resultados */
+    padding: 20px; /* Espaciado interno */
+}
+
+.form-container {
+    flex: 1; /* Permite que el contenedor del formulario ocupe espacio */
+    max-width: 400px; /* Ancho máximo del formulario */
+    margin-right: 20px; /* Espacio entre el formulario y los resultados */
+    background-color: #f9f9f9; /* Color de fondo del formulario */
+    padding: 20px; /* Espaciado interno del formulario */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+}
+
+.results-container {
+    flex: 2; /* Permite que el contenedor de resultados ocupe más espacio */
+    background-color: #ffffff; /* Color de fondo de los resultados */
+    padding: 20px; /* Espaciado interno de los resultados */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    overflow-y: auto; /* Permite desplazamiento vertical si hay muchos resultados */
+    max-height: 600px; /* Altura máxima para el contenedor de resultados */
+}
+
+.modal-header {
+    margin-bottom: 20px; /* Espacio debajo del encabezado del modal */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Espacio entre los grupos de formulario */
+}
+
+.form-control {
+    width: 100%; /* Ancho completo para los campos de entrada */
+    padding: 10px; /* Espaciado interno de los campos */
+    border: 1px solid #ccc; /* Borde de los campos */
+    border-radius: 4px; /* Bordes redondeados para los campos */
+}
+
+.submit-button {
+    background-color: #007bff; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    border: none; /* Sin borde */
+    padding: 10px 15px; /* Espaciado interno del botón */
+    border-radius: 4px; /* Bordes redondeados para el botón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.submit-button:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el mouse */
+}
+
+.anime-card {
+    display: flex; /* Utiliza Flexbox para alinear la imagen y la información */
+    margin-bottom: 15px; /* Espacio entre las tarjetas de anime */
+    padding: 10px; /* Espaciado interno de las tarjetas */
+    border: 1px solid #ddd; /* Borde de las tarjetas */
+    border-radius: 4px; /* Bordes redondeados para las tarjetas */
+    cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+}
+
+.anime-card img {
+    width: 80px; /* Ancho de la imagen */
+    height: auto; /* Altura automática para mantener la proporción */
+    margin-right: 10px; /* Espacio entre la imagen y la información */
+}
+
+.anime-info {
+    display: flex; /* Utiliza Flexbox para alinear el título y los detalles */
+    flex-direction: column; /* Coloca el título encima de los detalles */
+}
+
     </style>
 </head>
 <body>
@@ -459,7 +545,7 @@ select.filter-button:hover {
                        class="search-input" 
                        id="searchInput" 
                        placeholder="Buscar anime..."
-                       oninput="debounceSearch(event)">
+                       oninput="debounceSearch(event)" style="color:black;">
             </div>
             <form id="animeForm" onsubmit="handleSubmit(event)">
                 <div class="form-group">
