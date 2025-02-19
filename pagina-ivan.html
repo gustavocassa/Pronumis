@@ -528,6 +528,10 @@ select.filter-button:hover {
         <!-- Los resultados de la búsqueda se mostrarán aquí -->
     </div>
 </div>
+
+
+
+            
         </div>
 
         <div class="gallery" id="animeGallery"></div>
@@ -2778,27 +2782,29 @@ select.filter-button:hover {
             }
         }
 
-// Función para manejar el envío del formulario
-function handleSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const dataToCopy = Object.fromEntries(formData);
-    
-    // Convertir los datos a un formato de texto
-    const textToCopy = JSON.stringify(dataToCopy, null, 2); // Formato JSON con indentación
+    function handleSubmit(event) {
+        event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
 
-    // Copiar al portapapeles
-    navigator.clipboard.writeText(textToCopy)
-        .then(() => {
-            console.log('Datos copiados al portapapeles:', textToCopy);
-            alert('Datos copiados al portapapeles'); // Mensaje de confirmación
-        })
-        .catch(err => {
-            console.error('Error al copiar al portapapeles:', err);
+        // Obtiene los valores de los campos del formulario
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
+        const score = document.getElementById('score').value;
+        const imageUrl = document.getElementById('imageUrl').value;
+        const episodes = document.getElementById('episodes').value;
+        const status = document.getElementById('status').value;
+        const type = document.getElementById('type').value;
+
+        // Crea un texto con toda la información
+        const content = `Título: ${title}\nCategoría: ${category}\nPuntuación: ${score}\nURL de la imagen: ${imageUrl}\nEpisodios: ${episodes}\nEstado: ${status}\nTipo: ${type}`;
+
+        // Copia el contenido al portapapeles
+        navigator.clipboard.writeText(content).then(() => {
+            alert('Contenido copiado al portapapeles!');
+        }).catch(err => {
+            console.error('Error al copiar el contenido: ', err);
         });
+    }
 
-    event.target.reset(); // Reiniciar el formulario
-}
         </script>
 </body>
 </html>
